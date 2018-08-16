@@ -1,0 +1,54 @@
+@prefix : <http://religiousecologies.org/vocab#> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# Properties
+#
+
+:digitizedBy a rdf:Property ;
+    rdfs:label "digitized by"@en ;
+    rdfs:comment "An entity responsible for the digitization of a resource."@en ;
+    rdfs:subPropertyOf dcterms:creator .
+
+:digitized a rdf:Property ;
+    rdfs:label "date digitized"@en ;
+    rdfs:comment "The date of the digitization of a resource."@en ;
+    rdfs:subPropertyOf dcterms:created .
+
+:denominationFamily a rdf:Property ;
+    rdfs:label "denomination family"@en ;
+    rdfs:comment "A subgroup of the denomination."@en .
+
+:denominationId a rdf:Property ;
+    rdfs:label "denomination ID"@en ;
+    rdfs:comment "A legacy denomination identifier by the 1926 U.S. Census of Religious Bodies."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
+:scheduleId a rdf:Property ;
+    rdfs:label "schedule ID"@en ;
+    rdfs:comment "A legacy schedule identifier by the 1926 U.S. Census of Religious Bodies."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
+:countyId a rdf:Property ;
+    rdfs:label "county ID"@en ;
+    rdfs:comment "A county identifier by the Atlas of Historical County Boundaries."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
+:box a rdf:Property ;
+    rdfs:label "box"@en .
+
+#
+# Classes
+#
+
+:Schedule a rdfs:Class ;
+    rdfs:label "Schedule"@en ;
+    rdfs:comment "A schedule from the 1926 U.S. Census of Religious Bodies."@en ;
+    rdfs:subClassOf bibo:Document .
+
+:Denomination a rdfs:Class ;
+    rdfs:label "Denomination"@en ;
+    rdfs:comment "A religious denomination."@en .
