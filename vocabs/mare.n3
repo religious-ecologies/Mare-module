@@ -39,11 +39,22 @@
 
 :digitized a rdf:Property ;
     rdfs:label "date digitized"@en ;
-    rdfs:comment "The date of the digitization of a resource."@en ;
+    rdfs:comment "A date of the digitization of a resource."@en ;
     rdfs:subPropertyOf dcterms:created .
 
 :box a rdf:Property ;
-    rdfs:label "box"@en .
+    rdfs:label "box"@en ;
+    rdfs:comment "A box identifier."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
+:stateTerritory a rdf:Property ;
+    rdfs:label "state/territory"@en ;
+    rdfs:comment "The state/territory of this resource."@en .
+
+:fips a rdf:Property ;
+    rdfs:label "FIPS county code"@en ;
+    rdfs:comment "A FIPS county code."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
 
 #
 # Classes
