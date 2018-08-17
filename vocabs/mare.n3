@@ -8,34 +8,39 @@
 # Properties
 #
 
-:digitizedBy a rdf:Property ;
-    rdfs:label "digitized by"@en ;
-    rdfs:comment "An entity responsible for the digitization of a resource."@en ;
-    rdfs:subPropertyOf dcterms:creator .
+:denomination a rdf:Property ;
+    rdfs:label "has denomination"@en ;
+    rdfs:comment "The denomination of this resource."@en ;
+    rdfs:range :Denomination .
 
-:digitized a rdf:Property ;
-    rdfs:label "date digitized"@en ;
-    rdfs:comment "The date of the digitization of a resource."@en ;
-    rdfs:subPropertyOf dcterms:created .
-
-:denominationFamily a rdf:Property ;
-    rdfs:label "denomination family"@en ;
-    rdfs:comment "A subgroup of the denomination."@en .
-
-:denominationId a rdf:Property ;
-    rdfs:label "denomination ID"@en ;
-    rdfs:comment "A legacy denomination identifier by the 1926 U.S. Census of Religious Bodies."@en ;
-    rdfs:subPropertyOf dcterms:identifier .
+:county a rdf:Property ;
+    rdfs:label "has county"@en ;
+    rdfs:comment "The county of this resource."@en ;
+    rdfs:range :County .
 
 :scheduleId a rdf:Property ;
     rdfs:label "schedule ID"@en ;
     rdfs:comment "A legacy schedule identifier by the 1926 U.S. Census of Religious Bodies."@en ;
     rdfs:subPropertyOf dcterms:identifier .
 
+:denominationId a rdf:Property ;
+    rdfs:label "denomination ID"@en ;
+    rdfs:comment "A legacy denomination identifier by the 1926 U.S. Census of Religious Bodies."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
 :countyId a rdf:Property ;
     rdfs:label "county ID"@en ;
     rdfs:comment "A county identifier by the Atlas of Historical County Boundaries."@en ;
     rdfs:subPropertyOf dcterms:identifier .
+
+:denominationFamily a rdf:Property ;
+    rdfs:label "denomination family"@en ;
+    rdfs:comment "A subgroup of a denomination."@en .
+
+:digitized a rdf:Property ;
+    rdfs:label "date digitized"@en ;
+    rdfs:comment "The date of the digitization of a resource."@en ;
+    rdfs:subPropertyOf dcterms:created .
 
 :box a rdf:Property ;
     rdfs:label "box"@en .
@@ -52,3 +57,7 @@
 :Denomination a rdfs:Class ;
     rdfs:label "Denomination"@en ;
     rdfs:comment "A religious denomination."@en .
+
+:County a rdfs:Class ;
+    rdfs:label "County"@en ;
+    rdfs:comment "A United States county."@en .
