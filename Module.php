@@ -146,6 +146,36 @@ class Module extends AbstractModule
                     ],
                 ]
             ],
+            [
+                'o:label' => 'County',
+                'o:resource_class' => ['o:id' => $vocabMembers['resource_class']['mare:County']],
+                'o:resource_template_property' => [
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:title']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:countyId']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:fips']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:stateTerritory']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:type']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:source']],
+                        'o:data_type' => 'uri',
+                    ],
+                ]
+            ],
         ]);
     }
 
