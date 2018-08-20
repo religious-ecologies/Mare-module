@@ -83,6 +83,10 @@ class Module extends AbstractModule
                         'o:data_type' => 'literal',
                     ],
                     [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:scheduleId']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
                         'o:property' => ['o:id' => $vocabMembers['property']['dcterms:creator']],
                         'o:data_type' => 'literal',
                     ],
@@ -96,10 +100,6 @@ class Module extends AbstractModule
                     ],
                     [
                         'o:property' => ['o:id' => $vocabMembers['property']['mare:box']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:scheduleId']],
                         'o:data_type' => 'literal',
                     ],
                     [
@@ -133,15 +133,15 @@ class Module extends AbstractModule
                         'o:data_type' => 'literal',
                     ],
                     [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:description']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
                         'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationId']],
                         'o:data_type' => 'literal',
                     ],
                     [
                         'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationFamily']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:description']],
                         'o:data_type' => 'literal',
                     ],
                 ]
@@ -160,6 +160,10 @@ class Module extends AbstractModule
                     ],
                     [
                         'o:property' => ['o:id' => $vocabMembers['property']['mare:fips']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:countyName']],
                         'o:data_type' => 'literal',
                     ],
                     [
