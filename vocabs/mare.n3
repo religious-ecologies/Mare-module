@@ -33,9 +33,13 @@
     rdfs:comment "A county identifier by the Atlas of Historical County Boundaries."@en ;
     rdfs:subPropertyOf dcterms:identifier .
 
+:countyName a rdf:Property ;
+    rdfs:label "county name"@en ;
+    rdfs:comment "A county name."@en .
+
 :denominationFamily a rdf:Property ;
     rdfs:label "denomination family"@en ;
-    rdfs:comment "A subgroup of a denomination."@en .
+    rdfs:comment "A supergroup of a denomination."@en .
 
 :digitized a rdf:Property ;
     rdfs:label "date digitized"@en ;
@@ -49,7 +53,7 @@
 
 :stateTerritory a rdf:Property ;
     rdfs:label "state/territory"@en ;
-    rdfs:comment "The state/territory of this resource."@en .
+    rdfs:comment "A state/territory of this resource."@en .
 
 :fips a rdf:Property ;
     rdfs:label "FIPS county code"@en ;
