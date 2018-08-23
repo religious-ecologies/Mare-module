@@ -91,10 +91,6 @@ class Module extends AbstractModule
                         'o:data_type' => 'literal',
                     ],
                     [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:created']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
                         'o:property' => ['o:id' => $vocabMembers['property']['dcterms:source']],
                         'o:data_type' => 'uri',
                     ],
