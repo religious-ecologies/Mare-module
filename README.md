@@ -54,7 +54,7 @@ Omeka resource templates used by the MARE project:
   - mare:countyId (literal)
   - mare:digitized (literal)
  
- ### Denomination
+#### Denomination
  - Class: mare:Denomination
  - Properties:
    - dcterms:title (literal)
