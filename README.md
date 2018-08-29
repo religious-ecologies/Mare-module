@@ -78,17 +78,19 @@ Omeka resource templates used by the MARE project:
 Mapping instructions for batch importing from prepared CSV files to Omeka S,
 using the CSVImport module.
 
-The FileSideload module must be installed and configured, the MARE vocabulary
-must be imported, and the MARE item sets and resource templates must be created.
-Use the `prefix:local_name` format as CSV column headers to enable CSVImport
-auto-mapping.
+The FileSideload module must be installed and configured, and the MARE module
+must be installed (the module creates the MARE vocabulary, item sets, and
+resource templates). Use the `prefix:local_name` format as CSV column headers to
+enable CSVImport auto-mapping.
 
 #### Schedules
-- Import type: Item
-- Resource template: Schedule
-- Class: mare:Schedule
-- Item set: Schedules
-- Mapping:
+- Basic import settings:
+  - Import type: Item
+  - Resource template: Schedule
+  - Class: mare:Schedule
+  - Item set: Schedules
+  - Owner: Lincoln M.
+- Map to Omeka S data:
   - relative_path_to_image [Media import: Sideload]
   - dcterms:title
   - mare:scheduleId
@@ -100,21 +102,25 @@ auto-mapping.
   - mare:digitized
 
 #### Denominations
-- Import type: Item
-- Resource template: Denomination
-- Class: mare:Denomination
-- Item set: Denominations
-- Mapping:
+- Basic import settings:
+  - Import type: Item
+  - Resource template: Denomination
+  - Class: mare:Denomination
+  - Item set: Denominations
+  - Owner: Lincoln M.
+- Map to Omeka S data:
   - dcterms:title
   - mare:denominationId
   - mare:denominationFamily
 
 #### Counties
-- Import type: Item
-- Resource template: County
-- Class: mare:County
-- Item set: Counties
-- Mapping:
+- Basic import settings:
+  - Import type: Item
+  - Resource template: County
+  - Class: mare:County
+  - Item set: Counties
+  - Owner: Lincoln M.
+- Map to Omeka S data:
   - dcterms:title
   - mare:countyId 
   - mare:countyName
