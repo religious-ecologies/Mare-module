@@ -8,71 +8,71 @@
 # Properties
 #
 
-:denomination a rdf:Property ;
-    rdfs:label "has denomination"@en ;
-    rdfs:comment "The denomination of this resource."@en ;
-    rdfs:range :Denomination .
-
-:county a rdf:Property ;
-    rdfs:label "has county"@en ;
-    rdfs:comment "The county of this resource."@en ;
-    rdfs:range :County .
-
-:scheduleId a rdf:Property ;
-    rdfs:label "schedule ID"@en ;
-    rdfs:comment "A legacy schedule identifier by the 1926 U.S. Census of Religious Bodies."@en ;
+:ahcbCountyId a rdf:Property ;
+    rdfs:label "AHCB county ID"@en ;
+    rdfs:comment "A county identifier published by the Atlas of Historical County Boundaries."@en ;
     rdfs:subPropertyOf dcterms:identifier .
-
-:denominationId a rdf:Property ;
-    rdfs:label "denomination ID"@en ;
-    rdfs:comment "A legacy denomination identifier by the 1926 U.S. Census of Religious Bodies."@en ;
-    rdfs:subPropertyOf dcterms:identifier .
-
-:countyId a rdf:Property ;
-    rdfs:label "county ID"@en ;
-    rdfs:comment "A county identifier by the Atlas of Historical County Boundaries."@en ;
-    rdfs:subPropertyOf dcterms:identifier .
-
-:countyName a rdf:Property ;
-    rdfs:label "county name"@en ;
-    rdfs:comment "A county name."@en .
-
-:denominationFamily a rdf:Property ;
-    rdfs:label "denomination family"@en ;
-    rdfs:comment "A supergroup of a denomination."@en .
-
-:digitized a rdf:Property ;
-    rdfs:label "date digitized"@en ;
-    rdfs:comment "A date of the digitization of a resource."@en ;
-    rdfs:subPropertyOf dcterms:created .
 
 :box a rdf:Property ;
     rdfs:label "box"@en ;
     rdfs:comment "A box identifier."@en ;
     rdfs:subPropertyOf dcterms:identifier .
 
+:county a rdf:Property ;
+    rdfs:label "has county"@en ;
+    rdfs:comment "The county of this resource."@en ;
+    rdfs:range :County .
+
+:countyName a rdf:Property ;
+    rdfs:label "county name"@en ;
+    rdfs:comment "A county name."@en .
+
+:denomination a rdf:Property ;
+    rdfs:label "has denomination"@en ;
+    rdfs:comment "The denomination of this resource."@en ;
+    rdfs:range :Denomination .
+
+:denominationFamily a rdf:Property ;
+    rdfs:label "denomination family"@en ;
+    rdfs:comment "A supergroup of a denomination."@en .
+
+:denominationId a rdf:Property ;
+    rdfs:label "denomination ID"@en ;
+    rdfs:comment "A denomination identifier."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
+:digitized a rdf:Property ;
+    rdfs:label "date digitized"@en ;
+    rdfs:comment "A date of the digitization of a resource."@en ;
+    rdfs:subPropertyOf dcterms:created .
+
+:fipsCountyCode a rdf:Property ;
+    rdfs:label "FIPS county code"@en ;
+    rdfs:comment "A county code published by the Federal Information Processing Standard."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
+:scheduleId a rdf:Property ;
+    rdfs:label "schedule ID"@en ;
+    rdfs:comment "A schedule identifier."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
 :stateTerritory a rdf:Property ;
     rdfs:label "state/territory"@en ;
     rdfs:comment "A state/territory of this resource."@en .
-
-:fips a rdf:Property ;
-    rdfs:label "FIPS county code"@en ;
-    rdfs:comment "A FIPS county code."@en ;
-    rdfs:subPropertyOf dcterms:identifier .
 
 #
 # Classes
 #
 
-:Schedule a rdfs:Class ;
-    rdfs:label "Schedule"@en ;
-    rdfs:comment "A schedule from the 1926 U.S. Census of Religious Bodies."@en ;
-    rdfs:subClassOf bibo:Document .
+:County a rdfs:Class ;
+    rdfs:label "County"@en ;
+    rdfs:comment "A United States county."@en .
 
 :Denomination a rdfs:Class ;
     rdfs:label "Denomination"@en ;
     rdfs:comment "A religious denomination."@en .
 
-:County a rdfs:Class ;
-    rdfs:label "County"@en ;
-    rdfs:comment "A United States county."@en .
+:Schedule a rdfs:Class ;
+    rdfs:label "Schedule"@en ;
+    rdfs:comment "A schedule from the U.S. Census of Religious Bodies."@en ;
+    rdfs:subClassOf bibo:Document .

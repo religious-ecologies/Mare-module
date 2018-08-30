@@ -1,6 +1,7 @@
 <?php
 namespace Mare;
 
+use Doctrine\DBAL\Connection;
 use Omeka\Api\Representation\ItemRepresentation;
 use Omeka\Module\AbstractModule;
 use Zend\EventManager\Event;
@@ -9,174 +10,20 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class Module extends AbstractModule
 {
+    /**
+     * @var array Cache of vocabulary members (classes and properties).
+     */
+    protected $vocabMembers;
+
+    /**
+     * Install this module only once.
+     *
+     * Any subsequent changes to the data model should be done via the user
+     * interface or during self::upgrade() after a version bump.
+     */
     public function install(ServiceLocatorInterface $services)
     {
-        $importer = $services->get('Omeka\RdfImporter');
-        $conn = $services->get('Omeka\Connection');
-        $api = $services->get('Omeka\ApiManager');
-
-        // Import the MARE vocabulary.
-        $importer->import(
-            'file',
-            [
-                'o:namespace_uri' => 'http://religiousecologies.org/vocab#',
-                'o:prefix' => 'mare',
-                'o:label' => 'Mapping American Religious Ecologies',
-                'o:comment' =>  null,
-            ],
-            [
-                'file' => __DIR__ . '/vocabs/mare.n3',
-                'format' => 'turtle',
-            ]
-        );
-
-        // Get vocabulary members (classes and properties).
-        $vocabMembers = [];
-        foreach (['resource_class', 'property'] as $member) {
-            $sql = 'SELECT m.id, m.local_name, v.prefix FROM %s m JOIN vocabulary v ON m.vocabulary_id = v.id';
-            $stmt = $conn->query(sprintf($sql, $member));
-            $vocabMembers[$member] = [];
-            foreach ($stmt as $row) {
-                $vocabMembers[$member][sprintf('%s:%s', $row['prefix'], $row['local_name'])] = $row['id'];
-            }
-        }
-
-        // Create the MARE item sets.
-        $response = $api->batchCreate('item_sets', [
-            [
-                'dcterms:title' => [
-                    [
-                        'type' => 'literal',
-                        'property_id' => $vocabMembers['property']['dcterms:title'],
-                        '@value' => 'Schedules',
-                    ],
-                ],
-            ],
-            [
-                'dcterms:title' => [
-                    [
-                        'type' => 'literal',
-                        'property_id' => $vocabMembers['property']['dcterms:title'],
-                        '@value' => 'Denominations',
-                    ],
-                ],
-            ],
-            [
-                'dcterms:title' => [
-                    [
-                        'type' => 'literal',
-                        'property_id' => $vocabMembers['property']['dcterms:title'],
-                        '@value' => 'Counties',
-                    ],
-                ],
-            ],
-        ]);
-
-        // Create the MARE resource templates.
-        $response = $api->batchCreate('resource_templates', [
-            [
-                'o:label' => 'Schedule',
-                'o:resource_class' => ['o:id' => $vocabMembers['resource_class']['mare:Schedule']],
-                'o:resource_template_property' => [
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:title']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:scheduleId']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:creator']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:source']],
-                        'o:data_type' => 'uri',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:box']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:denomination']],
-                        'o:data_type' => 'resource:item',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationId']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:county']],
-                        'o:data_type' => 'resource:item',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:countyId']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:digitized']],
-                        'o:data_type' => 'literal',
-                    ],
-                ],
-            ],
-            [
-                'o:label' => 'Denomination',
-                'o:resource_class' => ['o:id' => $vocabMembers['resource_class']['mare:Denomination']],
-                'o:resource_template_property' => [
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:title']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationId']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationFamily']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:description']],
-                        'o:data_type' => 'literal',
-                    ],
-                ]
-            ],
-            [
-                'o:label' => 'County',
-                'o:resource_class' => ['o:id' => $vocabMembers['resource_class']['mare:County']],
-                'o:resource_template_property' => [
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:title']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:countyId']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:fips']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:countyName']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['mare:stateTerritory']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:type']],
-                        'o:data_type' => 'literal',
-                    ],
-                    [
-                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:source']],
-                        'o:data_type' => 'uri',
-                    ],
-                ]
-            ],
-        ]);
+        $this->installDataModel($services);
     }
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
@@ -226,5 +73,204 @@ class Module extends AbstractModule
             return false;
         }
         return true;
+    }
+
+    /**
+     * Get vocabulary members (classes and properties).
+     *
+     * @param Connection $conn
+     * @return array
+     */
+    public function getVocabMembers(Connection $conn)
+    {
+        if (isset($this->vocabMembers)) {
+            return $this->vocabMembers;
+        }
+        // Cache vocab members.
+        $vocabMembers = [];
+        foreach (['resource_class', 'property'] as $member) {
+            $sql = 'SELECT m.id, m.local_name, v.prefix FROM %s m JOIN vocabulary v ON m.vocabulary_id = v.id';
+            $stmt = $conn->query(sprintf($sql, $member));
+            $vocabMembers[$member] = [];
+            foreach ($stmt as $row) {
+                $vocabMembers[$member][sprintf('%s:%s', $row['prefix'], $row['local_name'])] = $row['id'];
+            }
+        }
+        return $this->vocabMembers = $vocabMembers;
+    }
+
+    /**
+     * Install the initial data model.
+     *
+     * @param ServiceLocatorInterface $services
+     */
+    public function installDataModel(ServiceLocatorInterface $services)
+    {
+        $importer = $services->get('Omeka\RdfImporter');
+        $conn = $services->get('Omeka\Connection');
+        $api = $services->get('Omeka\ApiManager');
+
+        // Import the MARE vocabulary.
+        $importer->import(
+            'file',
+            [
+                'o:namespace_uri' => 'http://religiousecologies.org/vocab#',
+                'o:prefix' => 'mare',
+                'o:label' => 'Mapping American Religious Ecologies',
+                'o:comment' =>  null,
+            ],
+            [
+                'file' => __DIR__ . '/vocabs/mare.n3',
+                'format' => 'turtle',
+            ]
+        );
+
+        $vocabMembers = $this->getVocabMembers($conn);
+
+        // Create the MARE item sets.
+        $response = $api->batchCreate('item_sets', [
+            [
+                'dcterms:title' => [
+                    [
+                        'type' => 'literal',
+                        'property_id' => $vocabMembers['property']['dcterms:title'],
+                        '@value' => 'Schedules',
+                    ],
+                ],
+            ],
+            [
+                'dcterms:title' => [
+                    [
+                        'type' => 'literal',
+                        'property_id' => $vocabMembers['property']['dcterms:title'],
+                        '@value' => 'Denominations',
+                    ],
+                ],
+            ],
+            [
+                'dcterms:title' => [
+                    [
+                        'type' => 'literal',
+                        'property_id' => $vocabMembers['property']['dcterms:title'],
+                        '@value' => 'Counties',
+                    ],
+                ],
+            ],
+            [
+                'dcterms:title' => [
+                    [
+                        'type' => 'literal',
+                        'property_id' => $vocabMembers['property']['dcterms:title'],
+                        '@value' => '1926 U.S. Census of Religious Bodies',
+                    ],
+                ],
+            ],
+        ]);
+
+        // Create the MARE resource templates.
+        $response = $api->batchCreate('resource_templates', [
+            [
+                'o:label' => 'Schedule (1926)',
+                'o:resource_class' => ['o:id' => $vocabMembers['resource_class']['mare:Schedule']],
+                'o:resource_template_property' => [
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:title']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:scheduleId']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:creator']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:source']],
+                        'o:data_type' => 'uri',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:box']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:denomination']],
+                        'o:data_type' => 'resource:item',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationId']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:county']],
+                        'o:data_type' => 'resource:item',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:ahcbCountyId']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:digitized']],
+                        'o:data_type' => 'literal',
+                    ],
+                ],
+            ],
+            [
+                'o:label' => 'Denomination',
+                'o:resource_class' => ['o:id' => $vocabMembers['resource_class']['mare:Denomination']],
+                'o:resource_template_property' => [
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:title']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationId']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationFamily']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:description']],
+                        'o:data_type' => 'literal',
+                    ],
+                ]
+            ],
+            [
+                'o:label' => 'County',
+                'o:resource_class' => ['o:id' => $vocabMembers['resource_class']['mare:County']],
+                'o:resource_template_property' => [
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:title']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:ahcbCountyId']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:fipsCountyCode']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:countyName']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:stateTerritory']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:type']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:source']],
+                        'o:data_type' => 'uri',
+                    ],
+                ]
+            ],
+        ]);
     }
 }
