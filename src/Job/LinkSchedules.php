@@ -78,48 +78,49 @@ class LinkSchedules extends AbstractJob
             ['resource_template_id' => $scheduleTemplate->id()],
             ['returnScalar' => 'id']
         )->getContent();
-        foreach ($scheduleIds as $scheduleId) {
-            $schedule = $em->find('Omeka\Entity\Item', $scheduleId);
-            $values = $schedule->getValues();
-            foreach ($this->links as $term => $link) {
+        foreach (array_chunk($scheduleIds, 100) as $scheduleIdsChunk) {
+            foreach ($scheduleIdsChunk as $scheduleId) {
+                $schedule = $em->find('Omeka\Entity\Item', $scheduleId);
+                $values = $schedule->getValues();
+                foreach ($this->links as $term => $link) {
 
-                // Get properties at the beginning of every iteration so we can
-                // clear() the entity manager at the end of the iteration.
-                $linkedIdProperty = $this->getProperty($link['term']);
-                $linkingProperty = $this->getProperty($term);
+                    // Get properties at the beginning of every iteration so we can
+                    // clear() the entity manager at the end of the iteration.
+                    $linkedIdProperty = $this->getProperty($link['term']);
+                    $linkingProperty = $this->getProperty($term);
 
-                // Get the linked item.
-                $criteria = Criteria::create()
-                    ->where(Criteria::expr()->eq('property', $linkedIdProperty));
-                $linkingValues = $values->matching($criteria);
-                if ($linkingValues->isEmpty()) {
-                    // This schedule has no linking ID of this property so skip
-                    // adding a linking value.
-                    continue;
+                    // Get the linked item.
+                    $criteria = Criteria::create()
+                        ->where(Criteria::expr()->eq('property', $linkedIdProperty));
+                    $linkingValues = $values->matching($criteria);
+                    if ($linkingValues->isEmpty()) {
+                        // This schedule has no linking ID of this property so skip
+                        // adding a linking value.
+                        continue;
+                    }
+                    $linkingId = trim($linkingValues->first()->getValue());
+                    $linkedItemId = array_search($linkingId, $this->linkedItemMaps[$term]);
+                    $linkedItem = $em->find('Omeka\Entity\Item', $linkedItemId);
+
+                    // Delete existing linking values from the schedule.
+                    $criteria = Criteria::create()
+                        ->where(Criteria::expr()->eq('property', $linkingProperty));
+                    $linkedValues = $values->matching($criteria);
+                    foreach ($linkedValues as $linkingValue) {
+                        $values->removeElement($linkingValue);
+                    }
+
+                    // Add the linking value to the schedule.
+                    $value = new Value;
+                    $value->setResource($schedule);
+                    $value->setProperty($linkingProperty);
+                    $value->setValueResource($linkedItem);
+                    $value->setType('resource');
+                    $values->add($value);
                 }
-                $linkingId = trim($linkingValues->first()->getValue());
-                $linkedItemId = array_search($linkingId, $this->linkedItemMaps[$term]);
-                $linkedItem = $em->find('Omeka\Entity\Item', $linkedItemId);
-
-                // Delete existing linking values from the schedule.
-                $criteria = Criteria::create()
-                    ->where(Criteria::expr()->eq('property', $linkingProperty));
-                $linkedValues = $values->matching($criteria);
-                foreach ($linkedValues as $linkingValue) {
-                    $values->removeElement($linkingValue);
-                }
-
-                // Add the linking value to the schedule.
-                $value = new Value;
-                $value->setResource($schedule);
-                $value->setProperty($linkingProperty);
-                $value->setValueResource($linkedItem);
-                $value->setType('resource');
-                $values->add($value);
+                $em->flush($schedule);
             }
-
-            // Flush and clear at the end of every iteration to save memory.
-            $em->flush($schedule);
+            // Clear at the end of every chunk to save memory.
             $em->clear();
         }
     }
