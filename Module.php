@@ -2,11 +2,14 @@
 namespace Mare;
 
 use Doctrine\DBAL\Connection;
+use Mare\Form\ConfigForm;
 use Omeka\Api\Representation\ItemRepresentation;
 use Omeka\Module\AbstractModule;
 use Zend\EventManager\Event;
 use Zend\EventManager\SharedEventManagerInterface;
+use Zend\Mvc\Controller\AbstractController;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Renderer\PhpRenderer;
 
 class Module extends AbstractModule
 {
@@ -24,6 +27,30 @@ class Module extends AbstractModule
     public function install(ServiceLocatorInterface $services)
     {
         $this->installDataModel($services);
+    }
+
+    public function getConfigForm(PhpRenderer $renderer)
+    {
+        $form = new ConfigForm;
+        $form->init();
+        return $renderer->formCollection($form, false);
+    }
+
+    public function handleConfigForm(AbstractController $controller)
+    {
+        $form = new ConfigForm;
+        $form->init();
+        $form->setData($controller->params()->fromPost());
+        if (!$form->isValid()) {
+            $controller->messenger()->addErrors($form->getMessages());
+            return false;
+        }
+        $services = $this->getServiceLocator();
+        $formData = $form->getData();
+        if ($formData['link_schedules']) {
+            $services->get('Omeka\Job\Dispatcher')->dispatch('Mare\Job\LinkSchedules');
+        }
+        return true;
     }
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
