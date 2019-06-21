@@ -79,49 +79,55 @@ class LinkSchedules extends AbstractJob
             ['returnScalar' => 'id']
         )->getContent();
         foreach (array_chunk($scheduleIds, 100) as $scheduleIdsChunk) {
+
+            // Clear the entity manager at the beginning of every chunk to
+            // reduce memory allocation.
+            $em->clear();
+
+            // Iterate over each Schedule.
             foreach ($scheduleIdsChunk as $scheduleId) {
                 $schedule = $em->find('Omeka\Entity\Item', $scheduleId);
-                $values = $schedule->getValues();
+                $scheduleValues = $schedule->getValues();
                 foreach ($this->links as $term => $link) {
 
-                    // Get properties at the beginning of every iteration so we can
-                    // clear() the entity manager at the end of the iteration.
+                    // Get properties at the beginning of every iteration so we
+                    // can clear() the entity manager at the end of the
+                    // iteration.
                     $linkedIdProperty = $this->getProperty($link['term']);
                     $linkingProperty = $this->getProperty($term);
 
-                    // Get the linked item.
+                    // Get the linked item (i.e. County, Denomination).
                     $criteria = Criteria::create()
                         ->where(Criteria::expr()->eq('property', $linkedIdProperty));
-                    $linkingValues = $values->matching($criteria);
-                    if ($linkingValues->isEmpty()) {
-                        // This schedule has no linking ID of this property so skip
-                        // adding a linking value.
+                    $linkingIdValue = $scheduleValues->matching($criteria)->first();
+                    if (!$linkingIdValue) {
+                        // This schedule has no linking ID of this property so
+                        // skip adding a linked item.
                         continue;
                     }
-                    $linkingId = trim($linkingValues->first()->getValue());
+                    $linkingId = trim($linkingIdValue->getValue());
                     $linkedItemId = array_search($linkingId, $this->linkedItemMaps[$term]);
                     $linkedItem = $em->find('Omeka\Entity\Item', $linkedItemId);
 
-                    // Delete existing linking values from the schedule.
+                    // Get the Schedule's linked item value, if it exists. Here
+                    // we can reuse existing linked item values to avoid primary
+                    // key churn. Note that it's possible that the linked item
+                    // has changed since the last linking job.
                     $criteria = Criteria::create()
                         ->where(Criteria::expr()->eq('property', $linkingProperty));
-                    $linkedValues = $values->matching($criteria);
-                    foreach ($linkedValues as $linkingValue) {
-                        $values->removeElement($linkingValue);
+                    $linkedItemValue = $scheduleValues->matching($criteria)->first();
+                    if (!$linkedItemValue) {
+                        // If a linked item value doesn't exist, create it.
+                        $linkedItemValue = new Value;
+                        $linkedItemValue->setResource($schedule);
+                        $linkedItemValue->setProperty($linkingProperty);
+                        $linkedItemValue->setType('resource');
+                        $scheduleValues->add($linkedItemValue);
                     }
-
-                    // Add the linking value to the schedule.
-                    $value = new Value;
-                    $value->setResource($schedule);
-                    $value->setProperty($linkingProperty);
-                    $value->setValueResource($linkedItem);
-                    $value->setType('resource');
-                    $values->add($value);
+                    $linkedItemValue->setValueResource($linkedItem);
                 }
                 $em->flush($schedule);
             }
-            // Clear at the end of every chunk to save memory.
-            $em->clear();
         }
     }
 
