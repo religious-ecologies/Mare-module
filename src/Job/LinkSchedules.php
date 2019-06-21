@@ -35,6 +35,13 @@ class LinkSchedules extends AbstractJob
     ];
 
     /**
+     * Cache of properties.
+     *
+     * @var array
+     */
+    protected $properties = [];
+
+    /**
      * Linked item maps
      *
      * [
@@ -54,8 +61,12 @@ class LinkSchedules extends AbstractJob
 
         // Build the linked item maps.
         foreach ($this->links as $term => $link) {
+
+            // Cache the property entities.
+            $this->properties[$link['term']] = $this->getProperty($link['term']);
+            $this->properties[$term] = $this->getProperty($term);
+
             $template = $this->getResourceTemplate($link['label']);
-            $linkedIdProperty = $this->getProperty($link['term']);
             $linkedItems = $api->search(
                 'items',
                 ['resource_template_id' => $template->id()],
@@ -64,7 +75,7 @@ class LinkSchedules extends AbstractJob
             foreach ($linkedItems as $linkedItem) {
                 $values = $linkedItem->getValues();
                 $criteria = Criteria::create()
-                    ->where(Criteria::expr()->eq('property', $linkedIdProperty));
+                    ->where(Criteria::expr()->eq('property', $this->properties[$link['term']]));
                 $linkedValue = $values->matching($criteria)[0];
                 $linkedId = $linkedValue ? trim($linkedValue->getValue()) : null;
                 $this->linkedItemMaps[$term][$linkedItem->getId()] = $linkedId;
@@ -91,10 +102,19 @@ class LinkSchedules extends AbstractJob
                 foreach ($this->links as $term => $link) {
 
                     // Get properties at the beginning of every iteration so we
-                    // can clear() the entity manager at the end of the
-                    // iteration.
-                    $linkedIdProperty = $this->getProperty($link['term']);
-                    $linkingProperty = $this->getProperty($term);
+                    // can clear the entity manager. Note that clearing puts the
+                    // properties into an unmanaged state so we have to find
+                    // them again to avoid Doctrine's "A new entity was found"
+                    // error. For some reason, simply merging the property back
+                    // into a managed state doesn't work.
+                    $linkedIdProperty = $em->find(
+                        'Omeka\Entity\Property',
+                        $this->properties[$link['term']]->getId()
+                    );
+                    $linkingProperty = $em->find(
+                        'Omeka\Entity\Property',
+                        $this->properties[$term]->getId()
+                    );
 
                     // Get the linked item (i.e. County, Denomination).
                     $criteria = Criteria::create()
