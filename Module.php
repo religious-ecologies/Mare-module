@@ -48,7 +48,24 @@ class Module extends AbstractModule
         $services = $this->getServiceLocator();
         $formData = $form->getData();
         if ($formData['link_schedules']) {
-            $services->get('Omeka\Job\Dispatcher')->dispatch('Mare\Job\LinkSchedules');
+            $services->get('Omeka\Job\Dispatcher')->dispatch(
+                'Mare\Job\LinkItems',
+                [
+                    'template_label' => 'Schedule (1926)',
+                    'links' => [
+                        [
+                            'linked_items_template_label' => 'County',
+                            'linked_id_property_term' => 'mare:ahcbCountyId',
+                            'linking_property_term' => 'mare:county',
+                        ],
+                        [
+                            'linked_items_template_label' => 'Denomination',
+                            'linked_id_property_term' => 'mare:denominationId',
+                            'linking_property_term' => 'mare:denomination',
+                        ],
+                    ],
+                ]
+            );
         }
         return true;
     }

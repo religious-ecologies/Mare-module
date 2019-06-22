@@ -7,30 +7,27 @@ use Omeka\Job\AbstractJob;
 use Omeka\Job\Exception;
 
 /**
- * Link "Schedule (1926)" schedules to their linked items.
+ * Link items to their linked items using a shared ID.
+ *
+ * Accepts the following arguments:
+ *
+ * - "template_label": the resource template of the items
+ * - "links": an array of links, each including the following:
+ *     - "linked_items_template_label": the resource template of the linked items
+ *     - "linked_id_property_term": the ID property shared between the item and the linked items
+ *     - "linking_property_term": the linking property of the items
  */
-class LinkSchedules extends AbstractJob
+class LinkItems extends AbstractJob
 {
     /**
      * @var string
      */
-    protected $templateLabel = 'Schedule (1926)';
+    protected $templateLabel;
 
     /**
      * @param array
      */
-    protected $links = [
-        [
-            'linked_items_template_label' => 'County',
-            'linked_id_property_term' => 'mare:ahcbCountyId',
-            'linking_property_term' => 'mare:county',
-        ],
-        [
-            'linked_items_template_label' => 'Denomination',
-            'linked_id_property_term' => 'mare:denominationId',
-            'linking_property_term' => 'mare:denomination',
-        ],
-    ];
+    protected $links;
 
     /**
      * @var array
@@ -39,30 +36,31 @@ class LinkSchedules extends AbstractJob
 
     public function perform()
     {
+        $this->handleArgs();
+        $this->buildLinkedItemMaps();
+
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $em = $this->getServiceLocator()->get('Omeka\EntityManager');
 
-        $this->buildLinkedItemMaps();
-
         // Do the actual linking.
-        $scheduleTemplate = $this->getResourceTemplate($this->templateLabel);
-        $scheduleIds = $api->search(
+        $itemTemplate = $this->getResourceTemplate($this->templateLabel);
+        $itemIds = $api->search(
             'items',
-            ['resource_template_id' => $scheduleTemplate->id()],
+            ['resource_template_id' => $itemTemplate->id()],
             ['returnScalar' => 'id']
         )->getContent();
-        foreach (array_chunk($scheduleIds, 100) as $scheduleIdsChunk) {
+        foreach (array_chunk($itemIds, 100) as $itemIdsChunk) {
 
             // Clear the entity manager at the beginning of every chunk to
             // reduce memory.
             $em->clear();
 
-            // Iterate over each Schedule.
-            foreach ($scheduleIdsChunk as $scheduleId) {
+            // Iterate over each item.
+            foreach ($itemIdsChunk as $itemId) {
 
-                // Get the schedule entity.
-                $schedule = $em->find('Omeka\Entity\Item', $scheduleId);
-                $scheduleValues = $schedule->getValues();
+                // Get the item entity.
+                $item = $em->find('Omeka\Entity\Item', $itemId);
+                $itemValues = $item->getValues();
 
                 foreach ($this->links as $link) {
 
@@ -78,36 +76,73 @@ class LinkSchedules extends AbstractJob
                     // Get the linked item entity (i.e. County, Denomination).
                     $criteria = Criteria::create()
                         ->where(Criteria::expr()->eq('property', $linkedIdProperty));
-                    $linkingIdValue = $scheduleValues->matching($criteria)->first();
+                    $linkingIdValue = $itemValues->matching($criteria)->first();
                     if (!$linkingIdValue) {
-                        // This schedule has no linking ID for this property so
-                        // skip adding a linked item.
+                        // This item has no linking ID for this property so skip
+                        // adding a linked item.
                         continue;
                     }
                     $linkingId = trim($linkingIdValue->getValue());
                     $linkedItemId = array_search($linkingId, $this->linkedItemMaps[$link['linking_property_term']]);
                     $linkedItem = $em->find('Omeka\Entity\Item', $linkedItemId);
 
-                    // Get the Schedule's linked item value, if it exists. Here
-                    // we can reuse existing linked item values to avoid primary
+                    // Get the item's linked item value, if it exists. Here we
+                    // can reuse existing linked item values to avoid primary
                     // key churn. Note that it's possible that the linked item
                     // has changed since the last linking job.
                     $criteria = Criteria::create()
                         ->where(Criteria::expr()->eq('property', $linkingProperty));
-                    $linkedItemValue = $scheduleValues->matching($criteria)->first();
+                    $linkedItemValue = $itemValues->matching($criteria)->first();
                     if (!$linkedItemValue) {
                         // If a linked item value doesn't exist, create it.
                         $linkedItemValue = new Value;
-                        $linkedItemValue->setResource($schedule);
+                        $linkedItemValue->setResource($item);
                         $linkedItemValue->setProperty($linkingProperty);
                         $linkedItemValue->setType('resource');
-                        $scheduleValues->add($linkedItemValue);
+                        $itemValues->add($linkedItemValue);
                     }
                     $linkedItemValue->setValueResource($linkedItem);
                 }
-                $em->flush($schedule);
+                $em->flush($item);
             }
         }
+    }
+
+    /**
+     * Handle passed arguments.
+     */
+    public function handleArgs()
+    {
+        $templateLabel = $this->getArg('template_label');
+        $links = $this->getArg('links');
+
+        $invalidArgs = [];
+        if (!is_string($templateLabel)) {
+            $invalidArgs[] = 'template_label';
+        }
+        if (is_array($links)) {
+            foreach ($links as $link) {
+                if (!isset($link['linked_items_template_label']) || !is_string($link['linked_items_template_label'])) {
+                    $invalidArgs[] = 'linked_items_template_label';
+                }
+                if (!isset($link['linked_id_property_term']) || !is_string($link['linked_id_property_term'])) {
+                    $invalidArgs[] = 'linked_id_property_term';
+                }
+                if (!isset($link['linking_property_term']) || !is_string($link['linking_property_term'])) {
+                    $invalidArgs[] = 'linking_property_term';
+                }
+            }
+        } else {
+            $invalidArgs[] = 'links';
+        }
+        if ($invalidArgs) {
+            throw new Exception\InvalidArgumentException(
+                sprintf('Missing or invalid job arguments: "%s"', implode(', ', $invalidArgs))
+            );
+        }
+
+        $this->templateLabel = $templateLabel;
+        $this->links = $links;
     }
 
     /**
@@ -152,6 +187,9 @@ class LinkSchedules extends AbstractJob
     {
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $response = $api->search('resource_templates', ['label' => $label]);
+        if (!$response->getTotalResults()) {
+            throw new Exception\RuntimeException(sprintf('Invalid resource template: "%s"', $label));
+        }
         return $response->getContent()[0];
     }
 
@@ -169,6 +207,9 @@ class LinkSchedules extends AbstractJob
             ['term' => $term],
             ['responseContent' => 'resource']
         );
+        if (!$response->getTotalResults()) {
+            throw new Exception\RuntimeException(sprintf('Invalid property: "%s"', $term));
+        }
         return $response->getContent()[0];
     }
 }
