@@ -48,18 +48,31 @@ class Module extends AbstractModule
         $services = $this->getServiceLocator();
         $formData = $form->getData();
         if ($formData['link_schedules']) {
+            $api = $services->get('Omeka\ApiManager');
+            $scheduleTemplate = $api->search(
+                'resource_templates',
+                ['label' => 'Schedule (1926)']
+            )->getContent()[0];
+            $countyTemplate = $api->search(
+                'resource_templates',
+                ['label' => 'County']
+            )->getContent()[0];
+            $denominationTemplate = $api->search(
+                'resource_templates',
+                ['label' => 'Denomination']
+            )->getContent()[0];
             $services->get('Omeka\Job\Dispatcher')->dispatch(
                 'Mare\Job\LinkItems',
                 [
-                    'template_label' => 'Schedule (1926)',
+                    'linking_items_query' => ['resource_template_id' => $scheduleTemplate->id()],
                     'links' => [
                         [
-                            'linked_items_template_label' => 'County',
+                            'linked_items_query' => ['resource_template_id' => $countyTemplate->id()],
                             'linked_id_property_term' => 'mare:ahcbCountyId',
                             'linking_property_term' => 'mare:county',
                         ],
                         [
-                            'linked_items_template_label' => 'Denomination',
+                            'linked_items_query' => ['resource_template_id' => $denominationTemplate->id()],
                             'linked_id_property_term' => 'mare:denominationId',
                             'linking_property_term' => 'mare:denomination',
                         ],
