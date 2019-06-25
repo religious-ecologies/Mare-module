@@ -36,13 +36,13 @@ guaranteed to be unique.
     - 1926 U.S. Census of Religious Bodies
   - Owner: Lincoln M.
 - Map to Omeka S data:
-  - relative_path_to_image [Media import: Sideload]
+  - relative_path_to_image [Media source: Sideload] + [Properties: mare:imageOriginalPath]
   - dcterms:title
   - mare:scheduleId
   - mare:denominationId
   - mare:ahcbCountyId
   - dcterms:creator "1926 U.S. Census of Religious Bodies"
-  - dcterms:source [Properties: Import as URL reference] https://catalog.archives.gov/id/2791163
+  - dcterms:source [Data type: Import as URL reference] https://catalog.archives.gov/id/2791163
   - mare:box
   - mare:digitized
   - mare:digitizedBy
@@ -75,6 +75,6 @@ guaranteed to be unique.
   - mare:fipsCountyCode
   - mare:stateTerritory
   - dcterms:type
-  - dcterms:source [Properties: Import as URL reference] https://publications.newberry.org/ahcbp/
+  - dcterms:source [Data type: Import as URL reference] https://publications.newberry.org/ahcbp/
 
 ## Religious Space and Immigration in the Nation's Capital
