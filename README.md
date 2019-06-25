@@ -45,6 +45,9 @@ guaranteed to be unique.
   - dcterms:source [Properties: Import as URL reference] https://catalog.archives.gov/id/2791163
   - mare:box
   - mare:digitized
+  - mare:digitizedBy
+  - mare:catalogedBy
+  - mare:imageRecheck
 
 #### Denominations
 - Basic import settings:
