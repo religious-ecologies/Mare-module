@@ -270,6 +270,22 @@ class Module extends AbstractModule
                         'o:property' => ['o:id' => $vocabMembers['property']['mare:digitized']],
                         'o:data_type' => 'literal',
                     ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:digitizedBy']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:catalogedBy']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:imageRecheck']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
+                        'o:property' => ['o:id' => $vocabMembers['property']['mare:imageOriginalPath']],
+                        'o:data_type' => 'literal',
+                    ],
                 ],
             ],
             [
