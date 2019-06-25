@@ -74,6 +74,10 @@
     rdfs:label "image recheck"@en ;
     rdfs:comment "An indication that an image should be rechecked."@en .
 
+:imageOriginalPath a rdf:Property ;
+    rdfs:label "image original path"@en ;
+    rdfs:comment "An original path of an image."@en .
+
 #
 # Classes
 #
