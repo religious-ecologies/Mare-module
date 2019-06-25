@@ -92,6 +92,11 @@ class LinkItems extends AbstractJob
                         $linkingId,
                         $this->linkedItemMaps[$link['linking_property_term']]
                     );
+                    if (!$linkedItemId ) {
+                        // This item has a linking ID that doesn't exist so skip
+                        // adding a linked item.
+                        continue;
+                    }
                     $linkedItem = $em->find('Omeka\Entity\Item', $linkedItemId);
 
                     // Get the item's linked item value, if it exists. Here we
