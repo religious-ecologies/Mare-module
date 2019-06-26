@@ -51,7 +51,7 @@ class LinkItems extends AbstractJob
         foreach (array_chunk($itemIds, 100) as $itemIdsChunk) {
 
             // Clear the entity manager at the beginning of every chunk to
-            // reduce memory.
+            // reduce memory load.
             $em->clear();
 
             // Iterate over each item.
@@ -78,7 +78,7 @@ class LinkItems extends AbstractJob
                         $link['linking_property']->getId()
                     );
 
-                    // Get the linked item entity (i.e. County, Denomination).
+                    // Get the linked item entity.
                     $criteria = Criteria::create()
                         ->where(Criteria::expr()->eq('property', $linkedIdProperty));
                     $linkingIdValue = $itemValues->matching($criteria)->first();

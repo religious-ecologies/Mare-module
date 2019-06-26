@@ -12,7 +12,7 @@ class ConfigForm extends Form
             'type' => 'checkbox',
             'name' => 'link_schedules',
             'options' => [
-                'label' => 'Link schedules', // @translate
+                'label' => 'Link "Schedule (1926)" schedules', // @translate
                 'info' => 'Link "Schedule (1926)" schedules to their linked items.', // @translate
             ],
         ]);
