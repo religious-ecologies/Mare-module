@@ -297,6 +297,10 @@ class Module extends AbstractModule
                         'o:data_type' => 'literal',
                     ],
                     [
+                        'o:property' => ['o:id' => $vocabMembers['property']['dcterms:alternative']],
+                        'o:data_type' => 'literal',
+                    ],
+                    [
                         'o:property' => ['o:id' => $vocabMembers['property']['mare:denominationId']],
                         'o:data_type' => 'literal',
                     ],
