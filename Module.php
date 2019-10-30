@@ -18,6 +18,17 @@ class Module extends AbstractModule
      */
     protected $vocabMembers;
 
+    public function getConfig()
+    {
+        return [
+            'block_layouts' => [
+                'factories' => [
+                    'mareStats' => Service\BlockLayout\MareStatsFactory::class,
+                ],
+            ],
+        ];
+    }
+
     /**
      * Install this module only once.
      *
