@@ -148,7 +148,7 @@ class Module extends AbstractModule
             $stateTerritories[$stateTerritory]['county_representations'][] = $countyRepresentation;
             $stateTerritories[$stateTerritory]['schedule_count'] += $scheduleCount;
         }
-        usort($counties, function($a, $b) {
+        uasort($counties, function($a, $b) {
             if ($a['schedule_count'] === $b['schedule_count']) {
                 return 0;
             }
