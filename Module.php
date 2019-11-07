@@ -136,6 +136,7 @@ class Module extends AbstractModule
             $scheduleCount = $countyRepresentation->subjectValueTotalCount();
             $counties[] = [
                 'county_representation' => $countyRepresentation,
+                'county_title' => $countyRepresentation->title(),
                 'state_territory' => $stateTerritory,
                 'schedule_count' => $scheduleCount,
             ];
@@ -150,7 +151,7 @@ class Module extends AbstractModule
         }
         uasort($counties, function($a, $b) {
             if ($a['schedule_count'] === $b['schedule_count']) {
-                return 0;
+                return strcmp($a['county_title'], $b['county_title']);
             }
             return ($a['schedule_count'] > $b['schedule_count']) ? -1 : 1;
         });
