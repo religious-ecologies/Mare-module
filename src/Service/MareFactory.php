@@ -1,14 +1,14 @@
 <?php
-namespace Mare\Service\BlockLayout;
+namespace Mare\Service;
 
 use Interop\Container\ContainerInterface;
-use Mare\BlockLayout\MareStats;
+use Mare\Stdlib\Mare;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-class MareStatsFactory implements FactoryInterface
+class MareFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
-        return new MareStats($services->get('Mare\Mare'));
+        return new Mare($services);
     }
 }

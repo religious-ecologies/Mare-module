@@ -21,6 +21,11 @@ class Module extends AbstractModule
     public function getConfig()
     {
         return [
+            'service_manager' => [
+                'factories' => [
+                    'Mare\Mare' => Service\MareFactory::class,
+                ],
+            ],
             'block_layouts' => [
                 'factories' => [
                     'mareStats' => Service\BlockLayout\MareStatsFactory::class,

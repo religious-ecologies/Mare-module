@@ -2,6 +2,7 @@
 namespace Mare\BlockLayout;
 
 use Doctrine\ORM\EntityManager;
+use Mare\Stdlib\Mare;
 use Omeka\Api\Manager;
 use Omeka\Api\Representation\SiteRepresentation;
 use Omeka\Api\Representation\SitePageRepresentation;
@@ -13,8 +14,7 @@ class MareStats extends AbstractBlockLayout
 {
     const SCHEDULE_TOTAL_COUNT = 232154;
 
-    protected $em;
-    protected $api;
+    protected $mare;
 
     // Resource class entities
     protected $county;
@@ -25,17 +25,16 @@ class MareStats extends AbstractBlockLayout
     protected $ahcbCountyId;
     protected $denominationId;
 
-    public function __construct(EntityManager $em, Manager $api)
+    public function __construct(Mare $mare)
     {
-        $this->em = $em;
-        $this->api = $api;
+        $this->mare = $mare;
 
-        $this->county = $this->getResourceClass('County');
-        $this->denomination = $this->getResourceClass('Denomination');
-        $this->schedule = $this->getResourceClass('Schedule');
+        $this->county = $mare->getResourceClass('http://religiousecologies.org/vocab#', 'County');
+        $this->denomination = $mare->getResourceClass('http://religiousecologies.org/vocab#', 'Denomination');
+        $this->schedule = $mare->getResourceClass('http://religiousecologies.org/vocab#', 'Schedule');
 
-        $this->ahcbCountyId = $this->getProperty('ahcbCountyId');
-        $this->denominationId = $this->getProperty('denominationId');
+        $this->ahcbCountyId = $mare->getProperty('http://religiousecologies.org/vocab#', 'ahcbCountyId');
+        $this->denominationId = $mare->getProperty('http://religiousecologies.org/vocab#', 'denominationId');
     }
 
     public function getLabel()
@@ -51,12 +50,13 @@ class MareStats extends AbstractBlockLayout
 
     public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
     {
+        $api = $this->mare->getApiManager();
         $html = [];
 
         // Totals
-        $scheduleCount = $this->api->read('resource_classes', $this->schedule->getId())->getContent()->itemCount();
-        $denominationCount = $this->api->read('resource_classes', $this->denomination->getId())->getContent()->itemCount();
-        $countyCount = $this->api->read('resource_classes', $this->county->getId())->getContent()->itemCount();
+        $scheduleCount = $api->read('resource_classes', $this->schedule->getId())->getContent()->itemCount();
+        $denominationCount = $api->read('resource_classes', $this->denomination->getId())->getContent()->itemCount();
+        $countyCount = $api->read('resource_classes', $this->county->getId())->getContent()->itemCount();
         $html[] = '<h3>Totals</h3>';
         $html[] = sprintf('<p><b>%s</b> schedules digitized (<b>%s</b>%% of total)</p>', number_format($scheduleCount), number_format($scheduleCount / self::SCHEDULE_TOTAL_COUNT, 3));
         $html[] = sprintf('<p><b>%s</b> denominations</p>', number_format($denominationCount));
@@ -97,40 +97,10 @@ class MareStats extends AbstractBlockLayout
         return implode("\n", $html);
     }
 
-    public function getResourceClass($localName)
-    {
-        $dql = '
-        SELECT rc
-        FROM Omeka\Entity\ResourceClass rc
-        JOIN rc.vocabulary v
-        WHERE v.namespaceUri = :namespace_uri
-        AND rc.localName = :local_name';
-        $query = $this->em->createQuery($dql);
-        $query->setParameters([
-            'namespace_uri' => 'http://religiousecologies.org/vocab#',
-            'local_name' => $localName,
-        ]);
-        return $query->getSingleResult();
-    }
-
-    public function getProperty($localName)
-    {
-        $dql = '
-        SELECT p
-        FROM Omeka\Entity\Property p
-        JOIN p.vocabulary v
-        WHERE v.namespaceUri = :namespace_uri
-        AND p.localName = :local_name';
-        $query = $this->em->createQuery($dql);
-        $query->setParameters([
-            'namespace_uri' => 'http://religiousecologies.org/vocab#',
-            'local_name' => $localName,
-        ]);
-        return $query->getSingleResult();
-    }
-
     public function getSchedulesPer($classId, $propertyId)
     {
+        $em = $this->mare->getEntityManager();
+
         // Get the number of schedules in every class.
         $dql = '
         SELECT v.value, COUNT(v.value) schedule_count
@@ -140,7 +110,7 @@ class MareStats extends AbstractBlockLayout
         AND r.resourceClass = :class_schedule
         GROUP BY v.value
         ORDER BY schedule_count DESC';
-        $query = $this->em->createQuery($dql);
+        $query = $em->createQuery($dql);
         $query->setMaxResults(25);
         $query->setParameters([
             'property_id' => $propertyId,
@@ -156,7 +126,7 @@ class MareStats extends AbstractBlockLayout
             WHERE v.value = :id_value
             AND v.property = :property_id
             AND i.resourceClass = :class';
-            $query = $this->em->createQuery($dql);
+            $query = $em->createQuery($dql);
             $query->setParameters([
                 'id_value' => $class['value'],
                 'property_id' => $propertyId,
