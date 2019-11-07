@@ -1,0 +1,37 @@
+<?php if ($stateTerritories): ?>
+<table>
+    <thead>
+    <tr>
+        <th>State/Territory</th>
+        <th>Schedule count</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($stateTerritories as $stateTerritoryName => $stateTerritory): ?>
+    <tr>
+        <td><?php echo $stateTerritoryName; ?></td>
+        <td><?php echo $stateTerritory['schedule_count']; ?></td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif; ?>
+
+<?php if ($counties): ?>
+<table>
+    <thead>
+    <tr>
+        <th>County</th>
+        <th>Schedule count</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($counties as $county): ?>
+    <tr>
+        <td><?php echo $county['county_representation']->link($county['county_representation']->displayTitle()); ?></td>
+        <td><?php echo $county['schedule_count']; ?></td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif; ?>

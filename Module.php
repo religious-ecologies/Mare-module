@@ -26,6 +26,11 @@ class Module extends AbstractModule
                     'Mare\Mare' => Service\MareFactory::class,
                 ],
             ],
+            'view_manager' => [
+                'template_path_stack' => [
+                    OMEKA_PATH . '/modules/Mare/view',
+                ],
+            ],
             'block_layouts' => [
                 'factories' => [
                     'mareStats' => Service\BlockLayout\MareStatsFactory::class,
@@ -101,32 +106,64 @@ class Module extends AbstractModule
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
     {
-        // Add section navigation to items.
         $sharedEventManager->attach(
-            'Omeka\Controller\Admin\Item',
-            'view.show.section_nav',
-            function (Event $event) {
-                $view = $event->getTarget();
-                $item = $view->item;
-                if ($this->isClass('mare:Schedule', $item)) {
-                    $sectionNav = $event->getParam('section_nav');
-                    $sectionNav['mare-schedule-transcribe'] = 'Transcribe';
-                    //~ $event->setParam('section_nav', $sectionNav);
-                }
-            }
-        );
-        // Add section content to items.
-        $sharedEventManager->attach(
-            'Omeka\Controller\Admin\Item',
+            'Omeka\Controller\Site\Item',
             'view.show.after',
-            function (Event $event) {
-                $view = $event->getTarget();
-                $item = $view->item;
-                if ($this->isClass('mare:Schedule', $item)) {
-                    //~ echo $view->partial('religious-ecologies/transcribe', []);
-                }
-            }
+            [$this, 'showDenominationStats']
         );
+    }
+
+    /**
+     * Show denomination stats on a denomination item page.
+     *
+     * @param Event $event
+     */
+    public function showDenominationStats(Event $event)
+    {
+        $view = $event->getTarget();
+        $item = $view->item;
+        if (!$this->isClass('mare:Denomination', $item)) {
+            return;
+        }
+        $mare = $this->getServiceLocator()->get('Mare\Mare');
+        $itemAdapter = $this->getServiceLocator()->get('Omeka\ApiAdapterManager')->get('items');
+        $countyEntities = $mare->getCountiesByDenomination($item->id());
+        $counties = [];
+        $stateTerritories = [];
+        foreach ($countyEntities as $countyEntity) {
+            $countyRepresentation = $itemAdapter->getRepresentation($countyEntity);
+            $stateTerritory = $countyRepresentation->value('mare:stateTerritory')->value();
+            $scheduleCount = $countyRepresentation->subjectValueTotalCount();
+            $counties[] = [
+                'county_representation' => $countyRepresentation,
+                'state_territory' => $stateTerritory,
+                'schedule_count' => $scheduleCount,
+            ];
+            if (!isset($stateTerritories[$stateTerritory])) {
+                $stateTerritories[$stateTerritory] = [
+                    'county_representations' => [],
+                    'schedule_count' => 0,
+                ];
+            }
+            $stateTerritories[$stateTerritory]['county_representations'][] = $countyRepresentation;
+            $stateTerritories[$stateTerritory]['schedule_count'] += $scheduleCount;
+        }
+        usort($counties, function($a, $b) {
+            if ($a['schedule_count'] === $b['schedule_count']) {
+                return 0;
+            }
+            return ($a['schedule_count'] > $b['schedule_count']) ? -1 : 1;
+        });
+        uasort($stateTerritories, function($a, $b) {
+            if ($a['schedule_count'] === $b['schedule_count']) {
+                return 0;
+            }
+            return ($a['schedule_count'] > $b['schedule_count']) ? -1 : 1;
+        });
+        echo $view->partial('mare/denomination-stats', [
+            'counties' => $counties,
+            'stateTerritories' => $stateTerritories,
+        ]);
     }
 
     /**
