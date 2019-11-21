@@ -138,7 +138,7 @@ class Module extends AbstractModule
         foreach ($countyEntities as $countyEntity) {
             $countyRepresentation = $itemAdapter->getRepresentation($countyEntity);
             $stateTerritory = $countyRepresentation->value('mare:stateTerritory')->value();
-            $scheduleCount = $countyRepresentation->subjectValueTotalCount();
+            $scheduleCount = $mare->getDenominationScheduleCountInCounty($countyRepresentation->id(), $item->id());
             $counties[] = [
                 'county_representation' => $countyRepresentation,
                 'county_title' => $countyRepresentation->title(),

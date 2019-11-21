@@ -123,6 +123,26 @@ class Mare
         return $query->getResult();
     }
 
+    public function getDenominationScheduleCountInCounty(int $countyId, int $denominationId) : int
+    {
+        $em = $this->services->get('Omeka\EntityManager');
+        $dql = sprintf('
+            SELECT COUNT(omeka_root)
+            FROM Omeka\Entity\Item omeka_root
+            LEFT JOIN omeka_root.values omeka_0 WITH omeka_0.property = %s
+            LEFT JOIN omeka_root.values omeka_2 WITH omeka_2.property = %s
+            WHERE ((omeka_0.valueResource = :omeka_1) AND (omeka_2.valueResource = :omeka_3))',
+            $this->getProperty('http://religiousecologies.org/vocab#', 'county')->getId(),
+            $this->getProperty('http://religiousecologies.org/vocab#', 'denomination')->getId()
+        );
+        $query = $em->createQuery($dql);
+        $query->setParameters([
+            'omeka_1' => $countyId,
+            'omeka_3' => $denominationId,
+        ]);
+        return $query->getSingleScalarResult();
+    }
+
     /**
      * Get the Doctrine entity manager.
      *
