@@ -98,6 +98,31 @@ class Mare
         return $query->getResult();
     }
 
+    public function getDenominationsByCounty(int $countyItemId) : array
+    {
+        $em = $this->services->get('Omeka\EntityManager');
+        $dql = '
+        SELECT denomination
+        FROM Omeka\Entity\Item denomination
+        JOIN Omeka\Entity\Value v WITH v.valueResource = denomination
+        WHERE v.resource IN (
+            SELECT IDENTITY(v2.resource)
+            FROM Omeka\Entity\Value v2
+            WHERE v2.valueResource = :county_item_id
+            AND v2.property = :county_property_id
+        )
+        AND v.property = :denomination_property_id
+        GROUP BY denomination
+        ORDER BY denomination.title';
+        $query = $em->createQuery($dql);
+        $query->setParameters([
+            'county_item_id' => $countyItemId,
+            'county_property_id' => $this->getProperty('http://religiousecologies.org/vocab#', 'county')->getId(),
+            'denomination_property_id' => $this->getProperty('http://religiousecologies.org/vocab#', 'denomination')->getId(),
+        ]);
+        return $query->getResult();
+    }
+
     /**
      * Get the Doctrine entity manager.
      *

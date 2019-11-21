@@ -1,0 +1,18 @@
+<?php if ($denominations): ?>
+<table>
+    <thead>
+    <tr>
+        <th>Denomination</th>
+        <th>Schedule count</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($denominations as $denomination): ?>
+    <tr>
+        <td><?php echo $denomination['denomination_representation']->link($denomination['denomination_representation']->displayTitle()); ?></td>
+        <td><?php echo $denomination['schedule_count']; ?></td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif; ?>

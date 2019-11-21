@@ -111,6 +111,11 @@ class Module extends AbstractModule
             'view.show.after',
             [$this, 'showDenominationStats']
         );
+        $sharedEventManager->attach(
+            'Omeka\Controller\Site\Item',
+            'view.show.after',
+            [$this, 'showCountyStats']
+        );
     }
 
     /**
@@ -164,6 +169,42 @@ class Module extends AbstractModule
         echo $view->partial('mare/denomination-stats', [
             'counties' => $counties,
             'stateTerritories' => $stateTerritories,
+        ]);
+    }
+
+    /**
+     * Show county stats on a county item page.
+     *
+     * @param Event $event
+     */
+    public function showCountyStats(Event $event)
+    {
+        $view = $event->getTarget();
+        $item = $view->item;
+        if (!$this->isClass('mare:County', $item)) {
+            return;
+        }
+        $mare = $this->getServiceLocator()->get('Mare\Mare');
+        $itemAdapter = $this->getServiceLocator()->get('Omeka\ApiAdapterManager')->get('items');
+        $denominationEntities = $mare->getDenominationsByCounty($item->id());
+        $denominations = [];
+        foreach ($denominationEntities as $denominationEntity) {
+            $denominationRepresentation = $itemAdapter->getRepresentation($denominationEntity);
+            $scheduleCount = $denominationRepresentation->subjectValueTotalCount();
+            $denominations[] = [
+                'denomination_representation' => $denominationRepresentation,
+                'denomination_title' => $denominationRepresentation->title(),
+                'schedule_count' => $scheduleCount,
+            ];
+        }
+        uasort($denominations, function($a, $b) {
+            if ($a['schedule_count'] === $b['schedule_count']) {
+                return strcmp($a['denomination_title'], $b['denomination_title']);
+            }
+            return ($a['schedule_count'] > $b['schedule_count']) ? -1 : 1;
+        });
+        echo $view->partial('mare/county-stats', [
+            'denominations' => $denominations,
         ]);
     }
 
