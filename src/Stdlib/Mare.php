@@ -123,22 +123,44 @@ class Mare
         return $query->getResult();
     }
 
-    public function getDenominationScheduleCountInCounty(int $countyId, int $denominationId) : int
+    public function getScheduleCountInCountyForDenomination(int $countyId, int $denominationId) : int
     {
         $em = $this->services->get('Omeka\EntityManager');
         $dql = sprintf('
-            SELECT COUNT(omeka_root)
-            FROM Omeka\Entity\Item omeka_root
-            LEFT JOIN omeka_root.values omeka_0 WITH omeka_0.property = %s
-            LEFT JOIN omeka_root.values omeka_2 WITH omeka_2.property = %s
-            WHERE ((omeka_0.valueResource = :omeka_1) AND (omeka_2.valueResource = :omeka_3))',
+            SELECT COUNT(schedule)
+            FROM Omeka\Entity\Item schedule
+            LEFT JOIN schedule.values county_value WITH county_value.property = %s
+            LEFT JOIN schedule.values denomination_value WITH denomination_value.property = %s
+            WHERE county_value.valueResource = :county_id
+            AND denomination_value.valueResource = :denomination_id',
             $this->getProperty('http://religiousecologies.org/vocab#', 'county')->getId(),
             $this->getProperty('http://religiousecologies.org/vocab#', 'denomination')->getId()
         );
         $query = $em->createQuery($dql);
         $query->setParameters([
-            'omeka_1' => $countyId,
-            'omeka_3' => $denominationId,
+            'county_id' => $countyId,
+            'denomination_id' => $denominationId,
+        ]);
+        return $query->getSingleScalarResult();
+    }
+
+    public function getScheduleCountInDenominationForCounty(int $denominationId, int $countyId) : int
+    {
+        $em = $this->services->get('Omeka\EntityManager');
+        $dql = sprintf('
+            SELECT COUNT(schedule)
+            FROM Omeka\Entity\Item schedule
+            LEFT JOIN schedule.values county_value WITH county_value.property = %s
+            LEFT JOIN schedule.values denomination_value WITH denomination_value.property = %s
+            WHERE county_value.valueResource = :county_id
+            AND denomination_value.valueResource = :denomination_id',
+            $this->getProperty('http://religiousecologies.org/vocab#', 'county')->getId(),
+            $this->getProperty('http://religiousecologies.org/vocab#', 'denomination')->getId()
+        );
+        $query = $em->createQuery($dql);
+        $query->setParameters([
+            'county_id' => $countyId,
+            'denomination_id' => $denominationId,
         ]);
         return $query->getSingleScalarResult();
     }
