@@ -66,23 +66,39 @@ class Module extends AbstractModule
             $controller->messenger()->addErrors($form->getMessages());
             return false;
         }
+
         $services = $this->getServiceLocator();
+        $api = $services->get('Omeka\ApiManager');
+        $dispatcher = $services->get('Omeka\Job\Dispatcher');
+
+        $scheduleTemplate = $api->search(
+            'resource_templates',
+            ['label' => 'Schedule (1926)']
+        )->getContent()[0];
+        $countyTemplate = $api->search(
+            'resource_templates',
+            ['label' => 'County']
+        )->getContent()[0];
+        $denominationTemplate = $api->search(
+            'resource_templates',
+            ['label' => 'Denomination']
+        )->getContent()[0];
+
         $formData = $form->getData();
+        if ($formData['derive_ahcb_state_territory_ids_schedules']) {
+            $dispatcher->dispatch(
+                'Mare\Job\DeriveAhcbStateTerritoryIds',
+                ['resource_template_id' => $scheduleTemplate->id()]
+            );
+        }
+        if ($formData['derive_ahcb_state_territory_ids_counties']) {
+            $dispatcher->dispatch(
+                'Mare\Job\DeriveAhcbStateTerritoryIds',
+                ['resource_template_id' => $countyTemplate->id()]
+            );
+        }
         if ($formData['link_schedules']) {
-            $api = $services->get('Omeka\ApiManager');
-            $scheduleTemplate = $api->search(
-                'resource_templates',
-                ['label' => 'Schedule (1926)']
-            )->getContent()[0];
-            $countyTemplate = $api->search(
-                'resource_templates',
-                ['label' => 'County']
-            )->getContent()[0];
-            $denominationTemplate = $api->search(
-                'resource_templates',
-                ['label' => 'Denomination']
-            )->getContent()[0];
-            $services->get('Omeka\Job\Dispatcher')->dispatch(
+            $dispatcher->dispatch(
                 'Mare\Job\LinkItems',
                 [
                     'linking_items_query' => ['resource_template_id' => $scheduleTemplate->id()],

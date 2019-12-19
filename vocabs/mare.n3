@@ -13,6 +13,11 @@
     rdfs:comment "A county identifier published by the Atlas of Historical County Boundaries."@en ;
     rdfs:subPropertyOf dcterms:identifier .
 
+:ahcbStateTerritoryId a rdf:Property ;
+    rdfs:label "AHCB state/territory ID"@en ;
+    rdfs:comment "A state/territory identifier published by the Atlas of Historical County Boundaries."@en ;
+    rdfs:subPropertyOf dcterms:identifier .
+
 :box a rdf:Property ;
     rdfs:label "box"@en ;
     rdfs:comment "A box identifier."@en ;
