@@ -62,8 +62,25 @@
     rdfs:subPropertyOf dcterms:identifier .
 
 :stateTerritory a rdf:Property ;
-    rdfs:label "state/territory"@en ;
-    rdfs:comment "A state/territory of this resource."@en .
+    rdfs:label "has state/territory"@en ;
+    rdfs:comment "The state/territory of this resource."@en ;
+    rdfs:range :StateTerritory .
+
+:stateTerritoryName a rdf:Property ;
+    rdfs:label "state/territory name"@en ;
+    rdfs:comment "A state/territory name."@en .
+
+:stateTerritoryFullName a rdf:Property ;
+    rdfs:label "state/territory full name"@en ;
+    rdfs:comment "A state/territory full name."@en .
+
+:stateTerritoryAbbrName a rdf:Property ;
+    rdfs:label "state/territory abbreviated name"@en ;
+    rdfs:comment "A state/territory abbreviated name."@en .
+
+:stateTerritoryTerritoryType a rdf:Property ;
+    rdfs:label "state/territory territory type"@en ;
+    rdfs:comment "A state/territory territory type."@en .
 
 :digitizedBy a rdf:Property ;
     rdfs:label "digitized by"@en ;
@@ -86,6 +103,10 @@
 #
 # Classes
 #
+
+:StateTerritory a rdfs:Class ;
+    rdfs:label "State/Territory"@en ;
+    rdfs:comment "A United States state/territory."@en .
 
 :County a rdfs:Class ;
     rdfs:label "County"@en ;
