@@ -73,7 +73,7 @@ guaranteed to be unique.
   - mare:ahcbCountyId
   - mare:countyName
   - mare:fipsCountyCode
-  - mare:stateTerritory
+  - mare:stateTerritoryName
   - dcterms:type
   - dcterms:source [Data type: Import as URL reference] https://publications.newberry.org/ahcbp/
 
