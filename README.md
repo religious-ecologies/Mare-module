@@ -77,4 +77,19 @@ guaranteed to be unique.
   - dcterms:type
   - dcterms:source [Data type: Import as URL reference] https://publications.newberry.org/ahcbp/
 
+#### States/Territories
+- Basic import settings:
+  - Import type: Item
+  - Resource template: State/Territory
+  - Class: mare:StateTerritory
+  - Item set: States/Territories
+  - Owner: Lincoln M.
+- Map to Omeka S data:
+  - dcterms:title (name)
+  - mare:ahcbStateTerritoryId (id)
+  - mare:stateTerritoryFullName (full_name)
+  - mare:stateTerritoryAbbrName (abbr_name)
+  - mare:stateTerritoryTerritoryType (terr_type)
+  - dcterms:source [Data type: Import as URL reference] https://publications.newberry.org/ahcbp/
+
 ## Religious Space and Immigration in the Nation's Capital
