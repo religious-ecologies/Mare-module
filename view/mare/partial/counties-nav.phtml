@@ -1,0 +1,5 @@
+<ul class="counties-nav">
+    <?php foreach ($counties as $county): ?>
+    <li data-item-id="<?php echo $this->escapeHtml($county['id']); ?>"><?php echo sprintf('%s', $county['title']); ?></li>
+    <?php endforeach; ?>
+</ul>

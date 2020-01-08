@@ -8,6 +8,7 @@ use Omeka\Module\AbstractModule;
 use Zend\EventManager\Event;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Mvc\Controller\AbstractController;
+use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
 
@@ -31,12 +32,47 @@ class Module extends AbstractModule
                     OMEKA_PATH . '/modules/Mare/view',
                 ],
             ],
+            'controllers' => [
+                'factories' => [
+                    'Mare\Controller\Partial' => Service\Controller\PartialControllerFactory::class,
+                ],
+            ],
             'block_layouts' => [
                 'factories' => [
                     'mareStats' => Service\BlockLayout\MareStatsFactory::class,
                 ],
             ],
+            'router' => [
+                'routes' => [
+                    'mare-api' => [
+                        'type' => \Zend\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/mare/:controller/:action',
+                            'constraints' => [
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Mare\Controller',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
+    }
+
+    public function onBootstrap(MvcEvent $event)
+    {
+        parent::onBootstrap($event);
+
+        $acl = $this->getServiceLocator()->get('Omeka\Acl');
+        $acl->allow(
+            null,
+            [
+                'Mare\Controller\Partial',
+            ]
+        );
     }
 
     /**

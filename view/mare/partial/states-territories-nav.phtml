@@ -1,0 +1,5 @@
+<ul id="state-territory-nav">
+    <?php foreach ($statesTerritories as $stateTerritory): ?>
+    <li data-item-id="<?php echo $this->escapeHtml($stateTerritory['id']); ?>"><?php echo sprintf('%s (%s)', $stateTerritory['title'], $stateTerritory['county_count']); ?></li>
+    <?php endforeach; ?>
+</ul>
