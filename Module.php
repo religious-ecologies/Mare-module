@@ -119,6 +119,10 @@ class Module extends AbstractModule
             'resource_templates',
             ['label' => 'Denomination']
         )->getContent()[0];
+        $denominationFamilyTemplate = $api->search(
+            'resource_templates',
+            ['label' => 'Denomination Family']
+        )->getContent()[0];
         $stateTerritoryTemplate = $api->search(
             'resource_templates',
             ['label' => 'State/Territory']
@@ -172,6 +176,21 @@ class Module extends AbstractModule
                             'linked_items_query' => ['resource_template_id' => $stateTerritoryTemplate->id()],
                             'linked_id_property_term' => 'mare:ahcbStateTerritoryId',
                             'linking_property_term' => 'mare:stateTerritory',
+                        ],
+                    ],
+                ]
+            );
+        }
+        if ($formData['link_denominations']) {
+            $dispatcher->dispatch(
+                'Mare\Job\LinkItems',
+                [
+                    'linking_items_query' => ['resource_template_id' => $denominationTemplate->id()],
+                    'links' => [
+                        [
+                            'linked_items_query' => ['resource_template_id' => $denominationFamilyTemplate->id()],
+                            'linked_id_property_term' => 'mare:denominationFamilyName',
+                            'linking_property_term' => 'mare:denominationFamily',
                         ],
                     ],
                 ]

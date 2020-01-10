@@ -26,6 +26,14 @@ class ConfigForm extends Form
         ]);
         $this->add([
             'type' => 'checkbox',
+            'name' => 'link_denominations',
+            'options' => [
+                'label' => 'Link "Denomination" items', // @translate
+                'info' => 'This will link "Denomination" items to their linked items.', // @translate
+            ],
+        ]);
+        $this->add([
+            'type' => 'checkbox',
             'name' => 'derive_ahcb_state_territory_ids_schedules',
             'options' => [
                 'label' => 'Add state IDs to "Schedule (1926)" items', // @translate
