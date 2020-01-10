@@ -1,0 +1,5 @@
+<ul class="denominations-nav">
+    <?php foreach ($denominations as $denomination): ?>
+    <li data-item-id="<?php echo $this->escapeHtml($denomination['id']); ?>"><?php echo sprintf('%s', $denomination['title']); ?></li>
+    <?php endforeach; ?>
+</ul>

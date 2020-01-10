@@ -1,0 +1,5 @@
+<ul id="denomination-family-nav">
+    <?php foreach ($denominationFamilies as $denominationFamily): ?>
+    <li data-item-id="<?php echo $this->escapeHtml($denominationFamily['id']); ?>"><?php echo sprintf('%s (%s)', $denominationFamily['title'], $denominationFamily['child_count']); ?></li>
+    <?php endforeach; ?>
+</ul>
