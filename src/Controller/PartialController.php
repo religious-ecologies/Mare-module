@@ -199,4 +199,43 @@ class PartialController extends AbstractActionController
         }
         return $children;
     }
+
+    public function countyAction()
+    {
+        $countyId = (int) $this->params()->fromQuery('county-id');
+        $county = $this->api()->read('items', $countyId)->getContent();
+
+        $view = new ViewModel;
+        $view->setTerminal(true);
+        $view->setVariable('county', $county);
+        return $view;
+    }
+
+    public function countySchedulesAction()
+    {
+        $countyId = (int) $this->params()->fromQuery('county-id');
+        $page = (int) $this->params()->fromQuery('page', 1);
+        $perPage = 25;
+
+        $county = $this->api()->read('items', $countyId)->getContent();
+        $property = $this->mare->getProperty('http://religiousecologies.org/vocab#', 'county');
+        $totalCount = $county->subjectValueTotalCount($property->getId());
+
+        $schedules = [];
+        $subjectValues = $county->subjectValues($page, $perPage, $property->getId());
+        if (isset($subjectValues['mare:county'])) {
+            foreach($subjectValues['mare:county'] as $value) {
+                $schedules[] = $value->resource();
+            }
+        }
+
+        $view = new ViewModel;
+        $view->setTerminal(true);
+        $view->setVariable('county', $county);
+        $view->setVariable('schedules', $schedules);
+        $view->setVariable('page', $page);
+        $view->setVariable('perPage', $perPage);
+        $view->setVariable('totalCount', $totalCount);
+        return $view;
+    }
 }

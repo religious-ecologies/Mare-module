@@ -1,0 +1,27 @@
+<?php $pagination = $this->pagination(null, $totalCount, $page, $perPage); ?>
+<?php if ($schedules): ?>
+<?php echo sprintf('<h4>Schedules (%s total)</h4>', $totalCount); ?>
+<?php echo $pagination; ?>
+<?php foreach($schedules as $schedule): ?>
+<?php
+$scheduleUrl = $this->url(
+    'site/resource-id',
+    [
+        'site-slug' => 'census-1926',
+        'controller' => 'item',
+        'action' => 'show',
+        'id' => $schedule->id(),
+    ]
+);
+echo sprintf(
+    '<a href="%s">%s%s</a>',
+    $this->escapeHtml($scheduleUrl),
+    $this->thumbnail($schedule, 'square'),
+    $this->escapeHtml($schedule->title())
+);
+?>
+<?php endforeach; ?>
+<?php echo $pagination; ?>
+<?php else: ?>
+<?php echo $this->translate('No schedules for this county.'); ?>
+<?php endif; ?>
