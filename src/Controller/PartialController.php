@@ -238,4 +238,43 @@ class PartialController extends AbstractActionController
         $view->setVariable('totalCount', $totalCount);
         return $view;
     }
+
+    public function denominationAction()
+    {
+        $denominationId = (int) $this->params()->fromQuery('denomination-id');
+        $denomination = $this->api()->read('items', $denominationId)->getContent();
+
+        $view = new ViewModel;
+        $view->setTerminal(true);
+        $view->setVariable('denomination', $denomination);
+        return $view;
+    }
+
+    public function denominationSchedulesAction()
+    {
+        $denominationId = (int) $this->params()->fromQuery('denomination-id');
+        $page = (int) $this->params()->fromQuery('page', 1);
+        $perPage = 25;
+
+        $denomination = $this->api()->read('items', $denominationId)->getContent();
+        $property = $this->mare->getProperty('http://religiousecologies.org/vocab#', 'denomination');
+        $totalCount = $denomination->subjectValueTotalCount($property->getId());
+
+        $schedules = [];
+        $subjectValues = $denomination->subjectValues($page, $perPage, $property->getId());
+        if (isset($subjectValues['mare:denomination'])) {
+            foreach($subjectValues['mare:denomination'] as $value) {
+                $schedules[] = $value->resource();
+            }
+        }
+
+        $view = new ViewModel;
+        $view->setTerminal(true);
+        $view->setVariable('denomination', $denomination);
+        $view->setVariable('schedules', $schedules);
+        $view->setVariable('page', $page);
+        $view->setVariable('perPage', $perPage);
+        $view->setVariable('totalCount', $totalCount);
+        return $view;
+    }
 }
