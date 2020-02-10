@@ -105,6 +105,10 @@
     rdfs:label "image original path"@en ;
     rdfs:comment "An original path of an image."@en .
 
+:notes a rdf:Property ;
+    rdfs:label "notes"@en ;
+    rdfs:comment "Notes for this resource."@en .
+
 #
 # Classes
 #
