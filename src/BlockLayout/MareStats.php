@@ -57,12 +57,15 @@ class MareStats extends AbstractBlockLayout
         $scheduleCount = $api->read('resource_classes', $this->schedule->getId())->getContent()->itemCount();
         $denominationCount = $api->read('resource_classes', $this->denomination->getId())->getContent()->itemCount();
         $countyCount = $api->read('resource_classes', $this->county->getId())->getContent()->itemCount();
+        $html[] = '<div class="mare-totals">';
         $html[] = '<h3>Totals</h3>';
         $html[] = sprintf('<p><b>%s</b> schedules digitized (<b>%s</b>%% of total)</p>', number_format($scheduleCount), number_format($scheduleCount / self::SCHEDULE_TOTAL_COUNT, 3));
         $html[] = sprintf('<p><b>%s</b> denominations</p>', number_format($denominationCount));
         $html[] = sprintf('<p><b>%s</b> counties</p>', number_format($countyCount));
+        $html[] = '</div>';
 
         // Schedules per denomination
+        $html[] = '<div class="mare-denomination-schedules">';
         $html[] = '<h3>Schedules per denomination (top 25)</h3>';
         $html[] = '<table><thead><tr><th>Denomination</th><th>Schedule count</th><th></th></tr></thead><tbody>';
         $denominations = $this->getSchedulesPer($this->denomination->getId(), $this->denominationId->getId());
@@ -77,8 +80,10 @@ class MareStats extends AbstractBlockLayout
                 ));
         }
         $html[] = '</tbody></table>';
+        $html[] = '</div>';
 
         // Schedules per county
+        $html[] = '<div class="mare-county-schedules">';
         $html[] = '<h3>Schedules per county (top 25)</h3>';
         $html[] = '<table><thead><tr><th>County</th><th>Schedule count</th><th></th></tr></thead><tbody>';
         $counties = $this->getSchedulesPer($this->county->getId(), $this->ahcbCountyId->getId());
@@ -93,6 +98,7 @@ class MareStats extends AbstractBlockLayout
                 ));
         }
         $html[] = '</tbody></table>';
+        $html[] = '</div>';
 
         return implode("\n", $html);
     }
