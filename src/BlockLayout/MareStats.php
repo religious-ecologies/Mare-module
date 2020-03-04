@@ -67,15 +67,14 @@ class MareStats extends AbstractBlockLayout
         // Schedules per denomination
         $html[] = '<div class="mare-denomination-schedules">';
         $html[] = '<h3>Schedules per denomination (top 25)</h3>';
-        $html[] = '<table><thead><tr><th>Denomination</th><th>Schedule count</th><th></th></tr></thead><tbody>';
+        $html[] = '<table><thead><tr><th>Denomination</th><th>Schedule count</th></tr></thead><tbody>';
         $denominations = $this->getSchedulesPer($this->denomination->getId(), $this->denominationId->getId());
         foreach ($denominations as $denomination) {
             $html[] = sprintf(
-                '<tr><td>%s</td><td>%s</td><td>%s</td></tr>',
+                '<tr><td>%s</td><td>%s</td></tr>',
                 $denomination['title'],
-                $denomination['schedule_count'],
                 $view->hyperlink(
-                    'view schedules',
+                    $denomination['schedule_count'],
                     $view->url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => $denomination['query']], true)
                 ));
         }
@@ -85,15 +84,14 @@ class MareStats extends AbstractBlockLayout
         // Schedules per county
         $html[] = '<div class="mare-county-schedules">';
         $html[] = '<h3>Schedules per county (top 25)</h3>';
-        $html[] = '<table><thead><tr><th>County</th><th>Schedule count</th><th></th></tr></thead><tbody>';
+        $html[] = '<table><thead><tr><th>County</th><th>Schedule count</th></tr></thead><tbody>';
         $counties = $this->getSchedulesPer($this->county->getId(), $this->ahcbCountyId->getId());
         foreach ($counties as $county) {
             $html[] = sprintf(
-                '<tr><td>%s</td><td>%s</td><td>%s</td></tr>',
+                '<tr><td>%s</td><td>%s</td></tr>',
                 $county['title'],
-                $county['schedule_count'],
                 $view->hyperlink(
-                    'view schedules',
+                    $county['schedule_count'],
                     $view->url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => $county['query']], true)
                 ));
         }
