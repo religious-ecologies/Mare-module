@@ -42,6 +42,21 @@ class Module extends AbstractModule
                     'mareStats' => Service\BlockLayout\MareStatsFactory::class,
                 ],
             ],
+            'datascribe_data_types' => [
+                'invokables' => [
+                    'populated_place_select' => DatascribeDataType\PopulatedPlaceSelect::class,
+                ],
+            ],
+            'view_helpers' => [
+                'invokables' => [
+                    'mareFormPopulatedPlaceSelect' => Form\ViewHelper\MareFormPopulatedPlaceSelect::class,
+                ],
+                'delegators' => [
+                    'Zend\Form\View\Helper\FormElement' => [
+                        Service\Delegator\FormElementDelegatorFactory::class,
+                    ],
+                ],
+            ],
             'router' => [
                 'routes' => [
                     'mare-api' => [
