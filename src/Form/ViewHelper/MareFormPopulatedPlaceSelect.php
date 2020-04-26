@@ -89,7 +89,8 @@ class MareFormPopulatedPlaceSelect extends AbstractHelper
             ->setAttribute('data-empty-option', $view->translate('Select a place'));
 
         return sprintf(
-            '<div class="mare-populated-place-select">%s%s%s%s</div>',
+            '<div class="mare-populated-place-select" data-fetch-error="%s">%s%s%s%s</div>',
+            $view->escapeHtml($view->translate('Error fetching populated place data.')),
             $view->formHidden($placeIdHidden),
             $view->formSelect($stateSelect),
             $view->formSelect($countySelect),
