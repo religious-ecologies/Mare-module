@@ -59,7 +59,7 @@ class MareStats extends AbstractBlockLayout
         $countyCount = $api->read('resource_classes', $this->county->getId())->getContent()->itemCount();
         $html[] = '<div class="mare-totals">';
         $html[] = '<h3>Totals</h3>';
-        $html[] = sprintf('<p><b>%s</b> schedules digitized (<b>%s</b>%% of total)</p>', number_format($scheduleCount), number_format($scheduleCount / self::SCHEDULE_TOTAL_COUNT, 3));
+        $html[] = sprintf('<p><b>%s</b> schedules digitized (<b>%s</b>%% of total)</p>', number_format($scheduleCount), number_format(100 * ($scheduleCount / self::SCHEDULE_TOTAL_COUNT), 3));
         $html[] = sprintf('<p><b>%s</b> denominations</p>', number_format($denominationCount));
         $html[] = sprintf('<p><b>%s</b> counties</p>', number_format($countyCount));
         $html[] = '</div>';
