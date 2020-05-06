@@ -248,6 +248,7 @@ class Module extends AbstractModule
         foreach ($countyEntities as $countyEntity) {
             $countyRepresentation = $itemAdapter->getRepresentation($countyEntity);
             $stateTerritory = $countyRepresentation->value('mare:stateTerritoryName')->value();
+            $stateTerritoryRepresentation = $countyRepresentation->value('mare:stateTerritory')->resource();
             $scheduleCount = $mare->getScheduleCountInCountyForDenomination($countyRepresentation->id(), $item->id());
             $counties[] = [
                 'county_representation' => $countyRepresentation,
@@ -257,6 +258,7 @@ class Module extends AbstractModule
             ];
             if (!isset($stateTerritories[$stateTerritory])) {
                 $stateTerritories[$stateTerritory] = [
+                    'state_territory_representation' => $stateTerritoryRepresentation,
                     'county_representations' => [],
                     'schedule_count' => 0,
                 ];
