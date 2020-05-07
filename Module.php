@@ -256,7 +256,7 @@ class Module extends AbstractModule
                 ];
             }
             if (null === $stateTerritories[$stateTerritory]['state_territory_representation']) {
-                $stateTerritoryResourceValue = $countyRepresentation->value('mare:stateTerritory', ['type' => 'resource']);
+                $stateTerritoryResourceValue = $countyRepresentation->value('mare:stateTerritory');
                 if ($stateTerritoryResourceValue) {
                     $stateTerritories[$stateTerritory]['state_territory_representation'] = $stateTerritoryResourceValue->value();
                 }
