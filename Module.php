@@ -258,7 +258,7 @@ class Module extends AbstractModule
             ];
             if (!isset($stateTerritories[$stateTerritory])) {
                 $stateTerritories[$stateTerritory] = [
-                    'state_territory_representation' => $stateTerritoryResourceValue ? $stateTerritoryResourceValue->resource() : null,
+                    'state_territory_representation' => $stateTerritoryResourceValue ? $stateTerritoryResourceValue->value() : null,
                     'county_representations' => [],
                     'schedule_count' => 0,
                 ];
