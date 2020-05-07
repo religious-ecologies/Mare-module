@@ -255,9 +255,11 @@ class Module extends AbstractModule
                     'schedule_count' => 0,
                 ];
             }
-            $stateTerritoryResourceValue = $countyRepresentation->value('mare:stateTerritory', ['type' => 'resource']);
-            if ($stateTerritoryResourceValue) {
-                $stateTerritories[$stateTerritory]['state_territory_representation'] = $stateTerritoryResourceValue->value();
+            if (null === $stateTerritories[$stateTerritory]['state_territory_representation']) {
+                $stateTerritoryResourceValue = $countyRepresentation->value('mare:stateTerritory', ['type' => 'resource']);
+                if ($stateTerritoryResourceValue) {
+                    $stateTerritories[$stateTerritory]['state_territory_representation'] = $stateTerritoryResourceValue->value();
+                }
             }
             $scheduleCount = $mare->getScheduleCountInCountyForDenomination($countyRepresentation->id(), $item->id());
             $counties[] = [
