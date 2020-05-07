@@ -9,7 +9,11 @@
     <tbody>
     <?php foreach ($stateTerritories as $stateTerritoryName => $stateTerritory): ?>
     <tr>
+        <?php if ($stateTerritory['state_territory_representation']): ?>
         <td><?php echo $stateTerritory['state_territory_representation']->link($stateTerritory['state_territory_representation']->displayTitle()); ?></td>
+        <?php else: ?>
+        <td><?php echo $stateTerritoryName; ?></td>
+        <?php endif; ?>
         <td><?php echo $stateTerritory['schedule_count']; ?></td>
     </tr>
     <?php endforeach; ?>
