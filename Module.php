@@ -258,7 +258,7 @@ class Module extends AbstractModule
             if (null === $stateTerritories[$stateTerritory]['state_territory_representation']) {
                 $stateTerritoryResourceValue = $countyRepresentation->value('mare:stateTerritory');
                 if ($stateTerritoryResourceValue) {
-                    $stateTerritories[$stateTerritory]['state_territory_representation'] = $stateTerritoryResourceValue->value();
+                    $stateTerritories[$stateTerritory]['state_territory_representation'] = $stateTerritoryResourceValue->valueResource();
                 }
             }
             $scheduleCount = $mare->getScheduleCountInCountyForDenomination($countyRepresentation->id(), $item->id());
