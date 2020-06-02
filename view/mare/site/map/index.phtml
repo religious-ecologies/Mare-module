@@ -16,7 +16,10 @@ $this->headScript()->appendFile(
         'crossorigin' => '',
     ]
 );
-$this->headStyle()->appendStyle('#map { height: 800px; }');
+$this->headStyle()->appendStyle('
+    #map { height: 800px; }
+    #map img { border: none; box-shadow: none; }
+');
 ?>
 
 <div id="map" data-counties-json="<?php echo $this->escapeHtml($this->assetUrl('js/counties_1926.json', 'Mare')); ?>"></div>
