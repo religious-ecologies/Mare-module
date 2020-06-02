@@ -46,13 +46,25 @@ fetch(mapDiv.dataset.countiesJson)
                     fetch(`https://omeka.religiousecologies.org/api/items?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`)
                         .then(response => response.json())
                         .then(function(json) {
-                            let popupDiv = document.createElement('div');;
+                            let popupDiv = document.createElement('div');
+			    let popupHeading = document.createElement('h4');
+			    popupHeading.innerHTML = `${feature.properties.name}, ${feature.properties.state_terr}`;
+			    popupDiv.appendChild(popupHeading);
+			    let popupUl = document.createElement('ul');
+			    popupDiv.appendChild(popupUl);
                             json.forEach(function(obj) {
                                 console.log(obj);
+				let popupLi = document.createElement('li');
+				popupUl.appendChild(popupLi);
                                 let popupItemLink = document.createElement('a');
-                                popupDiv.appendChild(popupItemLink);
+				popupLi.appendChild(popupItemLink);
+				popupItemLink.href = `https://omeka.religiousecologies.org/s/census-1926/item/${obj['o:id']}`;
+				popupItemLink.innerHTML = obj['o:title'];
                             });
-                            //~ `${feature.properties.name}, ${feature.properties.state_terr}`
+                            let popupBrowseLink = document.createElement('a');
+			    popupDiv.appendChild(popupBrowseLink);
+			    popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`;
+			    popupBrowseLink.innerHTML = 'Browse all';
                             layer.bindPopup(popupDiv);
                             layer.openPopup();
                         });
