@@ -1,0 +1,62 @@
+<?php
+$this->headLink()->appendStylesheet(
+    'https://unpkg.com/leaflet@1.6.0/dist/leaflet.css',
+    'screen',
+    '',
+    [
+        'integrity' => 'sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==',
+        'crossorigin' => '',
+    ]
+);
+$this->headScript()->appendFile(
+    'https://unpkg.com/leaflet@1.6.0/dist/leaflet.js',
+    'text/javascript',
+    [
+        'integrity' => 'sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==',
+        'crossorigin' => '',
+    ]
+);
+$this->headStyle()->appendStyle('#map { height: 800px; }');
+?>
+
+<div id="map" data-counties-json="<?php echo $this->escapeHtml($this->assetUrl('js/counties_1926.json', 'Mare')); ?>"></div>
+
+<script>
+let mapDiv = document.querySelector('#map')
+let map = L.map(mapDiv).setView([39.833333, -98.583333], 4);
+let tileLayer = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+    {minZoom: 3, maxZoom: 13, attribution: '{attribution.Esri} &mdash; Source: Esri'}
+).addTo(map);
+fetch(mapDiv.dataset.countiesJson)
+    .then(response => response.json())
+    .then(function(json) {
+        L.geoJSON(json, {
+            style: function(feature) {
+                return {weight: 2, color: 'grey'};
+            },
+            onEachFeature: function(feature, layer) {
+                layer.addEventListener('mouseover', function(e) {
+                    layer.setStyle({color: 'blue'});
+                });
+                layer.addEventListener('mouseout', function(e) {
+                    layer.setStyle({color: 'grey'});
+                });
+                layer.addEventListener('click', function(e) {
+                    fetch(`https://omeka.religiousecologies.org/api/items?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`)
+                        .then(response => response.json())
+                        .then(function(json) {
+                            let popupContent = '';
+                            json.forEach(function(obj) {
+                                console.log(obj);
+                            });
+                            layer.bindPopup(`${feature.properties.name}, ${feature.properties.state_terr}`);
+                            layer.openPopup();
+                        });
+                });
+            }
+        }).addTo(map);
+    });
+</script>
+
+

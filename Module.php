@@ -36,24 +36,36 @@ class Module extends AbstractModule
                 'factories' => [
                     'Mare\Controller\Partial' => Service\Controller\PartialControllerFactory::class,
                 ],
+                'invokables' => [
+                    'Mare\Controller\Site\Map' => Controller\Site\MapController::class,
+                ],
             ],
             'block_layouts' => [
                 'factories' => [
                     'mareStats' => Service\BlockLayout\MareStatsFactory::class,
                 ],
             ],
+            'navigation_links' => [
+                'invokables' => [
+                    'mare_schedule_map' => Site\NavigationLink\ScheduleMap::class,
+                ],
+            ],
             'router' => [
                 'routes' => [
-                    'mare-api' => [
-                        'type' => \Zend\Router\Http\Segment::class,
-                        'options' => [
-                            'route' => '/mare/:controller/:action',
-                            'constraints' => [
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
-                            'defaults' => [
-                                '__NAMESPACE__' => 'Mare\Controller',
+                    'site' => [
+                        'child_routes' => [
+                            'mare' => [
+                                'type' => \Zend\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/mare/:controller/:action',
+                                    'constraints' => [
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults' => [
+                                        '__NAMESPACE__' => 'Mare\Controller\Site',
+                                    ],
+                                ],
                             ],
                         ],
                     ],
