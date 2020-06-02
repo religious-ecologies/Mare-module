@@ -46,11 +46,14 @@ fetch(mapDiv.dataset.countiesJson)
                     fetch(`https://omeka.religiousecologies.org/api/items?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`)
                         .then(response => response.json())
                         .then(function(json) {
-                            let popupContent = '';
+                            let popupDiv = document.createElement('div');;
                             json.forEach(function(obj) {
                                 console.log(obj);
+                                let popupItemLink = document.createElement('a');
+                                popupDiv.appendChild(popupItemLink);
                             });
-                            layer.bindPopup(`${feature.properties.name}, ${feature.properties.state_terr}`);
+                            //~ `${feature.properties.name}, ${feature.properties.state_terr}`
+                            layer.bindPopup(popupDiv);
                             layer.openPopup();
                         });
                 });
