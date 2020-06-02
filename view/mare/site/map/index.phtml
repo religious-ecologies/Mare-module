@@ -23,7 +23,7 @@ $this->headStyle()->appendStyle('#map { height: 800px; }');
 
 <script>
 let mapDiv = document.querySelector('#map')
-let map = L.map(mapDiv).setView([39.833333, -98.583333], 4);
+let map = L.map(mapDiv).setView([39.833333, -98.583333], 5);
 let tileLayer = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
     {minZoom: 3, maxZoom: 13, attribution: '{attribution.Esri} &mdash; Source: Esri'}
@@ -47,24 +47,23 @@ fetch(mapDiv.dataset.countiesJson)
                         .then(response => response.json())
                         .then(function(json) {
                             let popupDiv = document.createElement('div');
-			    let popupHeading = document.createElement('h4');
-			    popupHeading.innerHTML = `${feature.properties.name}, ${feature.properties.state_terr}`;
-			    popupDiv.appendChild(popupHeading);
-			    let popupUl = document.createElement('ul');
-			    popupDiv.appendChild(popupUl);
+                            let popupHeading = document.createElement('h4');
+                            popupDiv.appendChild(popupHeading);
+                            popupHeading.innerHTML = `${feature.properties.name}, ${feature.properties.state_terr}`;
+                            let popupUl = document.createElement('ul');
+                            popupDiv.appendChild(popupUl);
                             json.forEach(function(obj) {
-                                console.log(obj);
-				let popupLi = document.createElement('li');
-				popupUl.appendChild(popupLi);
+                                let popupLi = document.createElement('li');
+                                popupUl.appendChild(popupLi);
                                 let popupItemLink = document.createElement('a');
-				popupLi.appendChild(popupItemLink);
-				popupItemLink.href = `https://omeka.religiousecologies.org/s/census-1926/item/${obj['o:id']}`;
-				popupItemLink.innerHTML = obj['o:title'];
+                                popupLi.appendChild(popupItemLink);
+                                popupItemLink.href = `https://omeka.religiousecologies.org/s/census-1926/item/${obj['o:id']}`;
+                                popupItemLink.innerHTML = obj['o:title'];
                             });
                             let popupBrowseLink = document.createElement('a');
-			    popupDiv.appendChild(popupBrowseLink);
-			    popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`;
-			    popupBrowseLink.innerHTML = 'Browse all';
+                            popupDiv.appendChild(popupBrowseLink);
+                            popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`;
+                            popupBrowseLink.innerHTML = 'Browse all';
                             layer.bindPopup(popupDiv);
                             layer.openPopup();
                         });
