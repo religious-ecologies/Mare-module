@@ -52,6 +52,19 @@ class Module extends AbstractModule
             ],
             'router' => [
                 'routes' => [
+                    'mare-api' => [
+                        'type' => \Zend\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/mare/:controller/:action',
+                            'constraints' => [
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Mare\Controller',
+                            ],
+                        ],
+                    ],
                     'site' => [
                         'child_routes' => [
                             'mare' => [
