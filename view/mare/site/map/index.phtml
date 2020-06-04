@@ -20,60 +20,111 @@ $this->headStyle()->appendStyle('
     #map { height: 800px; z-index: 0; }
     #map img { border: none; box-shadow: none; }
 ');
+$countyIds = [
+    'ak_terr',  'al_state', 'ar_state', 'az_state', 'ca_state',
+    'co_state', 'ct_state', 'dc',       'de_state', 'fl_state',
+    'ga_state', 'hi_terr',  'ia_state', 'id_state', 'il_state',
+    'in_state', 'ks_state', 'ky_state', 'la_state', 'ma_state',
+    'md_state', 'me_state', 'mi_state', 'mn_state', 'mo_state',
+    'ms_state', 'mt_state', 'nc_state', 'nd_state', 'ne_state',
+    'nh_state', 'nj_state', 'nm_state', 'nv_state', 'ny_state',
+    'oh_state', 'ok_state', 'or_state', 'pa_state', 'ri_state',
+    'sc_state', 'sd_state', 'tn_state', 'tx_state', 'ut_state',
+    'va_state', 'vt_state', 'wa_state', 'wi_state', 'wv_state',
+    'wy_state',
+];
+$countiesJsons = [];
+foreach ($countyIds as $countyId) {
+    $countiesJsons[$countyId] = $this->assetUrl(sprintf('js/counties_1926/%s.json', $countyId), 'Mare');
+}
 ?>
 
-<div id="map" data-counties-json="<?php echo $this->escapeHtml($this->assetUrl('js/counties_1926.json', 'Mare')); ?>"></div>
+<div id="map"
+    data-states-json="<?php echo $this->escapeHtml($this->assetUrl('js/states_1926.json', 'Mare')); ?>"
+    data-counties-jsons="<?php echo $this->escapeHtml(json_encode($countiesJsons)); ?>"></div>
 
 <script>
 let mapDiv = document.querySelector('#map')
 let map = L.map(mapDiv).setView([39.833333, -98.583333], 5);
 let tileLayer = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
-    {minZoom: 3, maxZoom: 13, attribution: '{attribution.Esri} &mdash; Source: Esri'}
+    {minZoom: 3, maxZoom: 10, attribution: '{attribution.Esri} &mdash; Source: Esri'}
 ).addTo(map);
-fetch(mapDiv.dataset.countiesJson)
-    .then(response => response.json())
-    .then(function(json) {
-        L.geoJSON(json, {
-            style: function(feature) {
-                return {weight: 2, color: 'grey'};
-            },
-            onEachFeature: function(feature, layer) {
-                layer.addEventListener('mouseover', function(e) {
-                    layer.setStyle({color: 'blue'});
-                });
-                layer.addEventListener('mouseout', function(e) {
-                    layer.setStyle({color: 'grey'});
-                });
-                layer.addEventListener('click', function(e) {
-                    fetch(`https://omeka.religiousecologies.org/api/items?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`)
-                        .then(response => response.json())
-                        .then(function(json) {
-                            let popupDiv = document.createElement('div');
-                            let popupHeading = document.createElement('h4');
-                            popupDiv.appendChild(popupHeading);
-                            popupHeading.innerHTML = `${feature.properties.name}, ${feature.properties.state_terr}`;
-                            let popupUl = document.createElement('ul');
-                            popupDiv.appendChild(popupUl);
-                            json.forEach(function(obj) {
-                                let popupLi = document.createElement('li');
-                                popupUl.appendChild(popupLi);
-                                let popupItemLink = document.createElement('a');
-                                popupLi.appendChild(popupItemLink);
-                                popupItemLink.href = `https://omeka.religiousecologies.org/s/census-1926/item/${obj['o:id']}`;
-                                popupItemLink.innerHTML = obj['o:title'];
-                            });
-                            let popupBrowseLink = document.createElement('a');
-                            popupDiv.appendChild(popupBrowseLink);
-                            popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`;
-                            popupBrowseLink.innerHTML = 'Browse all';
-                            layer.bindPopup(popupDiv);
-                            layer.openPopup();
-                        });
-                });
-            }
-        }).addTo(map);
+let countiesLayer;
+let countiesJsons = JSON.parse(mapDiv.dataset.countiesJsons);
+initMap();
+
+async function initMap() {
+    let response = await fetch(mapDiv.dataset.statesJson);
+    let json = await response.json();
+    L.geoJSON(json, {
+        style: function(feature) {
+            return {weight: 2, color: 'grey', fillColor: 'grey'};
+        },
+        onEachFeature: function(stateFeature, stateLayer) {
+            stateLayer.addEventListener('mouseover', function(e) {
+                stateLayer.setStyle({color: 'grey', fillColor: 'blue'});
+            });
+            stateLayer.addEventListener('mouseout', function(e) {
+                stateLayer.setStyle({color: 'grey', fillColor: 'grey'});
+            });
+            stateLayer.addEventListener('click', function(e) {
+                stateOnClick(stateFeature, stateLayer)
+            });
+        }
+    }).addTo(map);
+}
+
+async function stateOnClick(stateFeature, stateLayer) {
+    map.fitBounds(stateLayer.getBounds());
+    let response = await fetch(countiesJsons[stateFeature.id]);
+    let json = await response.json();
+    if (map.hasLayer(countiesLayer)) {
+        map.removeLayer(countiesLayer);
+    }
+    countiesLayer = L.geoJSON(json, {
+        style: function(feature) {
+            return {weight: 2, color: 'grey', fillColor: 'grey'};
+        },
+        onEachFeature: function(countyFeature, countyLayer) {
+            countyLayer.addEventListener('mouseover', function(e) {
+                countyLayer.setStyle({color: 'grey', fillColor: 'blue'});
+            });
+            countyLayer.addEventListener('mouseout', function(e) {
+                countyLayer.setStyle({color: 'grey', fillColor: 'grey'});
+            });
+            countyLayer.addEventListener('click', function(e) {
+                countyOnClick(countyFeature, countyLayer);
+            });
+        }
     });
+    countiesLayer.addTo(map);
+}
+
+async function countyOnClick(countyFeature, countyLayer) {
+    let response = await fetch(`https://omeka.religiousecologies.org/api/items?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${countyFeature.id}&resource_class_id[]=111`);
+    let json = await response.json();
+    let popupDiv = document.createElement('div');
+    let popupHeading = document.createElement('h4');
+    popupDiv.appendChild(popupHeading);
+    popupHeading.innerHTML = `${countyFeature.properties.name}, ${countyFeature.properties.state_terr}`;
+    let popupUl = document.createElement('ul');
+    popupDiv.appendChild(popupUl);
+    json.forEach(function(obj) {
+        let popupLi = document.createElement('li');
+        popupUl.appendChild(popupLi);
+        let popupItemLink = document.createElement('a');
+        popupLi.appendChild(popupItemLink);
+        popupItemLink.href = `https://omeka.religiousecologies.org/s/census-1926/item/${obj['o:id']}`;
+        popupItemLink.innerHTML = obj['o:title'];
+    });
+    let popupBrowseLink = document.createElement('a');
+    popupDiv.appendChild(popupBrowseLink);
+    popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`;
+    popupBrowseLink.innerHTML = 'Browse all';
+    countyLayer.bindPopup(popupDiv);
+    countyLayer.openPopup();
+}
 </script>
 
 
