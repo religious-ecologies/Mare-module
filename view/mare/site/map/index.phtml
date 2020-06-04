@@ -120,7 +120,7 @@ async function countyOnClick(countyFeature, countyLayer) {
     });
     let popupBrowseLink = document.createElement('a');
     popupDiv.appendChild(popupBrowseLink);
-    popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${feature.id}&resource_class_id[]=111`;
+    popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?property[0][joiner]=and&property[0][property]=196&property[0][type]=eq&property[0][text]=${countyFeature.id}&resource_class_id[]=111`;
     popupBrowseLink.innerHTML = 'Browse all';
     countyLayer.bindPopup(popupDiv);
     countyLayer.openPopup();
