@@ -32,7 +32,7 @@ class MapController extends AbstractActionController
         }
         $denominationSelect = (new \Zend\Form\Element\Select('denomination'))
             ->setValueOptions($valueOptions)
-            ->setEmptyOption('')
+            ->setEmptyOption('[All denominations]')
             ->setAttribute('id', 'denomination-select');
 
         $view = new ViewModel;

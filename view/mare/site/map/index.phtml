@@ -26,7 +26,7 @@ foreach ($countyIds as $countyId) {
 }
 ?>
 
-<?php echo $this->formSelect($denominationSelect); ?>
+<label>Filter by denomination <?php echo $this->formSelect($denominationSelect); ?></label>
 <div id="map"
     data-states-json="<?php echo $this->escapeHtml($this->assetUrl('js/states_1926.json', 'Mare')); ?>"
     data-counties-jsons="<?php echo $this->escapeHtml(json_encode($countiesJsons)); ?>"
