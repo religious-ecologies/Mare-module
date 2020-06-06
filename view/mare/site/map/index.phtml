@@ -42,6 +42,7 @@ const tileLayer = L.tileLayer(
 ).addTo(map);
 const countiesJsons = JSON.parse(mapDiv.dataset.countiesJsons);
 let countiesLayer;
+let cachedCounties = [];
 initMap();
 
 async function initMap() {
@@ -92,6 +93,9 @@ async function stateOnClick(stateFeature, stateLayer) {
 }
 
 async function countyOnClick(countyFeature, countyLayer) {
+    if (cachedCounties.includes(countyFeature.id)) {
+        return;
+    }
     let searchParams = {
         'resource_class_id[]': '111',
         'property[0][joiner]': 'and',
@@ -131,6 +135,7 @@ async function countyOnClick(countyFeature, countyLayer) {
     popupBrowseLink.innerHTML = 'Browse all';
     countyLayer.bindPopup(popupDiv);
     countyLayer.openPopup();
+    cachedCounties.push(countyFeature.id);
 }
 </script>
 
