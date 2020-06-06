@@ -97,6 +97,15 @@ async function countyOnClick(countyFeature, countyLayer) {
     if (cachedCounties.includes(countyFeature.id)) {
         return;
     }
+    let popupDiv = document.createElement('div');
+    let popupHeading = document.createElement('h4');
+    popupDiv.appendChild(popupHeading);
+    popupHeading.innerHTML = `${countyFeature.properties.name}, ${countyFeature.properties.state_terr}`;
+    let popupLoading = document.createElement('span');
+    popupDiv.appendChild(popupLoading);
+    popupLoading.innerHTML = 'Loading...';
+    countyLayer.bindPopup(popupDiv);
+    countyLayer.openPopup();
     let searchParams = {
         'resource_class_id[]': '111',
         'property[0][joiner]': 'and',
@@ -116,28 +125,28 @@ async function countyOnClick(countyFeature, countyLayer) {
     let urlSearchParams = new URLSearchParams(searchParams);
     let response = await fetch(`https://omeka.religiousecologies.org/api/items?${urlSearchParams.toString()}`);
     let json = await response.json();
-    let popupDiv = document.createElement('div');
-    let popupHeading = document.createElement('h4');
-    popupDiv.appendChild(popupHeading);
-    popupHeading.innerHTML = `${countyFeature.properties.name}, ${countyFeature.properties.state_terr}`;
-    let popupUl = document.createElement('ul');
-    popupDiv.appendChild(popupUl);
-    json.forEach(function(obj) {
-        let popupLi = document.createElement('li');
-        popupUl.appendChild(popupLi);
-        let popupItemLink = document.createElement('a');
-        popupLi.appendChild(popupItemLink);
-        popupItemLink.href = `https://omeka.religiousecologies.org/s/census-1926/item/${obj['o:id']}`;
-        popupItemLink.innerHTML = obj['o:title'];
-    });
-    let popupBrowseLink = document.createElement('a');
-    popupDiv.appendChild(popupBrowseLink);
-    popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?${urlSearchParams.toString()}`;
-    popupBrowseLink.innerHTML = 'Browse all';
-    countyLayer.bindPopup(popupDiv);
-    countyLayer.openPopup();
+    popupLoading.remove();
+    if (json.length) {
+        let popupUl = document.createElement('ul');
+        popupDiv.appendChild(popupUl);
+        json.forEach(function(obj) {
+            let popupLi = document.createElement('li');
+            popupUl.appendChild(popupLi);
+            let popupItemLink = document.createElement('a');
+            popupLi.appendChild(popupItemLink);
+            popupItemLink.href = `https://omeka.religiousecologies.org/s/census-1926/item/${obj['o:id']}`;
+            popupItemLink.innerHTML = obj['o:title'];
+        });
+        let popupBrowseLink = document.createElement('a');
+        popupDiv.appendChild(popupBrowseLink);
+        popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?${urlSearchParams.toString()}`;
+        popupBrowseLink.innerHTML = 'Browse all';
+    } else {
+        let popupNoneFound = document.createElement('span');
+        popupDiv.appendChild(popupNoneFound);
+        popupNoneFound.innerHTML = 'No schedules found';
+    }
     cachedCounties.push(countyFeature.id);
 }
 </script>
-
 
