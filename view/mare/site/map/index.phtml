@@ -45,6 +45,10 @@ let countiesLayer;
 let cachedCounties = [];
 initMap();
 
+denominationSelect.addEventListener('change', e => {
+    cachedCounties = [];
+});
+
 async function initMap() {
     let response = await fetch(mapDiv.dataset.statesJson);
     let json = await response.json();
