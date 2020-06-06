@@ -72,6 +72,7 @@ async function stateOnClick(stateFeature, stateLayer) {
     let json = await response.json();
     if (map.hasLayer(countiesLayer)) {
         map.removeLayer(countiesLayer);
+        cachedCounties = [];
     }
     countiesLayer = L.geoJSON(json, {
         style: function(feature) {
