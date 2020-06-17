@@ -57,6 +57,7 @@ async function initMap() {
             return {weight: 2, color: 'grey', fillColor: 'grey'};
         },
         onEachFeature: function(stateFeature, stateLayer) {
+            stateLayer.bindTooltip(stateFeature.properties.name);
             stateLayer.addEventListener('mouseover', function(e) {
                 stateLayer.setStyle({color: 'grey', fillColor: 'blue'});
             });
@@ -83,6 +84,7 @@ async function stateOnClick(stateFeature, stateLayer) {
             return {weight: 2, color: 'grey', fillColor: 'grey'};
         },
         onEachFeature: function(countyFeature, countyLayer) {
+            countyLayer.bindTooltip(`${countyFeature.properties.name}, ${countyFeature.properties.state_terr}`);
             countyLayer.addEventListener('mouseover', function(e) {
                 countyLayer.setStyle({color: 'grey', fillColor: 'blue'});
             });
