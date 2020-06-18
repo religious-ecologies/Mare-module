@@ -19,6 +19,20 @@ $this->headScript()->appendFile(
 $this->headStyle()->appendStyle('
     #map { height: 800px; z-index: 0; }
     #map img { border: none; box-shadow: none; }
+    #leaflet-control-default-view {
+        border-radius: 4px;
+        background-color: #fff;
+        width: 26px;
+        height: 26px;
+        line-height: 26px;
+        text-align: center;
+        text-decoration: none;
+        color: black;
+        font: bold 20px "Lucida Console", Monaco, monospace;
+        text-indent: 1px;
+        cursor: pointer;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    }
 ');
 $countiesJsons = [];
 foreach ($countyIds as $countyId) {
@@ -154,5 +168,26 @@ async function countyOnClick(countyFeature, countyLayer) {
     }
     cachedCounties.push(countyFeature.id);
 }
+
+L.Control.DefaultViewControl = L.Control.extend({
+    options: {'position': 'topleft'},
+    onAdd: map => {
+        const link = L.DomUtil.create('a');
+        link.id = 'leaflet-control-default-view';
+        link.href = '#';
+        link.title = 'Default view';
+        link.innerHTML = '□';
+        link.setAttribute('role', 'button');
+        link.setAttribute('aria-label', 'Default view');
+        L.DomEvent.disableClickPropagation(link);
+        L.DomEvent.on(link, 'click', e => {
+            e.preventDefault();
+            map.setView([39.833333, -98.583333], 5);
+        });
+        return link;
+    }
+});
+const defaultViewControl = new L.Control.DefaultViewControl();
+defaultViewControl.addTo(map);
 </script>
 
