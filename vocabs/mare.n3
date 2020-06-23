@@ -109,6 +109,15 @@
     rdfs:label "notes"@en ;
     rdfs:comment "Notes for this resource."@en .
 
+:community a rdf:Property ;
+    rdfs:label "has community"@en ;
+    rdfs:comment "The community of this resource."@en ;
+    rdfs:range :Community .
+
+:communityName a rdf:Property ;
+    rdfs:label "community name"@en ;
+    rdfs:comment "A community name."@en .
+
 #
 # Classes
 #
@@ -116,6 +125,10 @@
 :StateTerritory a rdfs:Class ;
     rdfs:label "State/Territory"@en ;
     rdfs:comment "A United States state/territory."@en .
+
+:Community a rdfs:Class ;
+    rdfs:label "Community"@en ;
+    rdfs:comment "A group of people having a particular characteristic in common."@en .
 
 :County a rdfs:Class ;
     rdfs:label "County"@en ;
