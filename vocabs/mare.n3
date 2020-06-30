@@ -118,6 +118,11 @@
     rdfs:label "community name"@en ;
     rdfs:comment "A community name."@en .
 
+:originatingInstitution a rdf:Property ;
+    rdfs:label "originating institution"@en ;
+    rdfs:comment "The institution from where this resource originates."@en ;
+    rdfs:subPropertyOf dcterms:publisher .
+
 #
 # Classes
 #
