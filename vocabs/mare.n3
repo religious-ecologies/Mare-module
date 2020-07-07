@@ -119,9 +119,10 @@
     rdfs:comment "A community name."@en .
 
 :originatingInstitution a rdf:Property ;
-    rdfs:label "originating institution"@en ;
+    rdfs:label "has originating institution"@en ;
     rdfs:comment "The institution from where this resource originates."@en ;
-    rdfs:subPropertyOf dcterms:publisher .
+    rdfs:subPropertyOf dcterms:publisher ;
+    rdfs:range :OriginatingInstitution .
 
 #
 # Classes
@@ -151,3 +152,7 @@
     rdfs:label "Schedule"@en ;
     rdfs:comment "A schedule from the U.S. Census of Religious Bodies."@en ;
     rdfs:subClassOf bibo:Document .
+
+:OriginatingInstitution a rdfs:Class ;
+    rdfs:label "Originating Institution"@en ;
+    rdfs:comment "An originating institution."@en .
