@@ -46,6 +46,11 @@
     rdfs:label "denomination family name"@en ;
     rdfs:comment "A denomination family name."@en .
 
+:ardaReligiousGroupFamily a rdf:Property ;
+    rdfs:label "has ARDA religious group family"@en ;
+    rdfs:comment "The ARDA religious group family of this resource."@en ;
+    rdfs:range :ArdaReligiousGroupFamily .
+
 :denominationId a rdf:Property ;
     rdfs:label "denomination ID"@en ;
     rdfs:comment "A denomination identifier."@en ;
@@ -142,7 +147,11 @@
 
 :DenominationFamily a rdfs:Class ;
     rdfs:label "Denomination Family"@en ;
-    rdfs:comment "A religious denomination family."@en .
+    rdfs:comment "A religious denomination family, defined by the United States Census Bureau."@en .
+
+:ArdaReligiousGroupFamily a rdfs:Class ;
+    rdfs:label "ARDA Religious Group Family"@en ;
+    rdfs:comment "A religious group family, defined by the Association of Religion Data Archives (ARDA)."@en .
 
 :Denomination a rdfs:Class ;
     rdfs:label "Denomination"@en ;
