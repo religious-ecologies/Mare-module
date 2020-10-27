@@ -1,5 +1,5 @@
 <?php
-namespace Mare\Controller;
+namespace Mare\Controller\Site;
 
 use Mare\Stdlib\Mare;
 use Omeka\Entity\Property;

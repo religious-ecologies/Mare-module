@@ -34,7 +34,7 @@ class Module extends AbstractModule
             ],
             'controllers' => [
                 'factories' => [
-                    'Mare\Controller\Partial' => Service\Controller\PartialControllerFactory::class,
+                    'Mare\Controller\Site\Partial' => Service\Controller\PartialControllerFactory::class,
                 ],
                 'invokables' => [
                     'Mare\Controller\Site\Map' => Controller\Site\MapController::class,
@@ -52,19 +52,6 @@ class Module extends AbstractModule
             ],
             'router' => [
                 'routes' => [
-                    'mare-api' => [
-                        'type' => \Zend\Router\Http\Segment::class,
-                        'options' => [
-                            'route' => '/mare/:controller/:action',
-                            'constraints' => [
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
-                            'defaults' => [
-                                '__NAMESPACE__' => 'Mare\Controller',
-                            ],
-                        ],
-                    ],
                     'site' => [
                         'child_routes' => [
                             'mare' => [
@@ -95,7 +82,7 @@ class Module extends AbstractModule
         $acl->allow(
             null,
             [
-                'Mare\Controller\Partial',
+                'Mare\Controller\Site\Partial',
             ]
         );
     }

@@ -2,7 +2,7 @@
 namespace Mare\Service\Controller;
 
 use Interop\Container\ContainerInterface;
-use Mare\Controller\PartialController;
+use Mare\Controller\Site\PartialController;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class PartialControllerFactory implements FactoryInterface
