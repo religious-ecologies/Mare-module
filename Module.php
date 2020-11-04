@@ -83,6 +83,7 @@ class Module extends AbstractModule
             null,
             [
                 'Mare\Controller\Site\Partial',
+                'Mare\Controller\Site\Map',
             ]
         );
     }
