@@ -67,7 +67,7 @@ class MareStats extends AbstractBlockLayout
         // Schedules per denomination
         $html[] = '<div class="mare-denomination-schedules">';
         $html[] = '<h3>Schedules per denomination (top 25)</h3>';
-        $html[] = '<table><thead><tr><th>Denomination</th><th>Schedule count</th></tr></thead><tbody>';
+        $html[] = '<table><thead><tr><th scope="col">Denomination</th><th scope="col">Schedule count</th></tr></thead><tbody>';
         $denominations = $this->getSchedulesPer($this->denomination->getId(), $this->denominationId->getId());
         foreach ($denominations as $denomination) {
             $html[] = sprintf(
@@ -84,7 +84,7 @@ class MareStats extends AbstractBlockLayout
         // Schedules per county
         $html[] = '<div class="mare-county-schedules">';
         $html[] = '<h3>Schedules per county (top 25)</h3>';
-        $html[] = '<table><thead><tr><th>County</th><th>Schedule count</th></tr></thead><tbody>';
+        $html[] = '<table><thead><tr><th scope="col">County</th><th scope="col">Schedule count</th></tr></thead><tbody>';
         $counties = $this->getSchedulesPer($this->county->getId(), $this->ahcbCountyId->getId());
         foreach ($counties as $county) {
             $html[] = sprintf(
