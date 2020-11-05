@@ -84,7 +84,7 @@ class PartialController extends AbstractActionController
     {
         $denominationFamilyId = (int) $this->params()->fromQuery('denomination-family-id');
         $denominationClass = $this->mare->getResourceClass('http://religiousecologies.org/vocab#', 'Denomination');
-        $denominationFamilyProperty = $this->mare->getProperty('http://religiousecologies.org/vocab#', 'denominationFamily');
+        $denominationFamilyProperty = $this->mare->getProperty('http://religiousecologies.org/vocab#', 'ardaReligiousGroupFamily');
 
         if (0 === $denominationFamilyId) {
             // Get denominations without a family.
