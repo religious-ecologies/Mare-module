@@ -48,9 +48,9 @@ class PartialController extends AbstractActionController
 
     public function denominationFamiliesNavAction()
     {
-        $denominationFamilyClass = $this->mare->getResourceClass('http://religiousecologies.org/vocab#', 'DenominationFamily');
+        $denominationFamilyClass = $this->mare->getResourceClass('http://religiousecologies.org/vocab#', 'ArdaReligiousGroupFamily');
         $denominationClass = $this->mare->getResourceClass('http://religiousecologies.org/vocab#', 'Denomination');
-        $denominationFamilyProperty = $this->mare->getProperty('http://religiousecologies.org/vocab#', 'denominationFamily');
+        $denominationFamilyProperty = $this->mare->getProperty('http://religiousecologies.org/vocab#', 'ardaReligiousGroupFamily');
 
         $data = $this->getParentsNavData($denominationFamilyClass, $denominationClass, $denominationFamilyProperty);
 
