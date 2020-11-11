@@ -156,11 +156,13 @@ async function countyOnClick(countyFeature, countyLayer) {
             popupLi.appendChild(popupItemLink);
             popupItemLink.href = `https://omeka.religiousecologies.org/s/census-1926/item/${obj['o:id']}`;
             popupItemLink.innerHTML = obj['o:title'];
+            popupItemLink.target = '_blank';
         });
         let popupBrowseLink = document.createElement('a');
         popupDiv.appendChild(popupBrowseLink);
         popupBrowseLink.href = `https://omeka.religiousecologies.org/s/census-1926/item?${urlSearchParams.toString()}`;
         popupBrowseLink.innerHTML = 'Browse all';
+        popupBrowseLink.target = '_blank';
     } else {
         let popupNoneFound = document.createElement('span');
         popupDiv.appendChild(popupNoneFound);
