@@ -59,7 +59,7 @@ class MareStats extends AbstractBlockLayout
         $countyCount = $api->read('resource_classes', $this->county->getId())->getContent()->itemCount();
         $html[] = '<div class="mare-totals">';
         $html[] = '<h3>Totals</h3>';
-        $html[] = sprintf('<p><b>%s</b> schedules digitized (<b>%s</b>%% of total)</p>', number_format($scheduleCount), number_format(100 * ($scheduleCount / self::SCHEDULE_TOTAL_COUNT), 3));
+        $html[] = sprintf('<p><b>%s</b> schedules digitized (<b>%s</b>%% of total)</p>', number_format($scheduleCount), number_format(100 * ($scheduleCount / self::SCHEDULE_TOTAL_COUNT), 1));
         $html[] = sprintf('<p><b>%s</b> denominations</p>', number_format($denominationCount));
         $html[] = sprintf('<p><b>%s</b> counties</p>', number_format($countyCount));
         $html[] = '</div>';
@@ -74,7 +74,7 @@ class MareStats extends AbstractBlockLayout
                 '<tr><td>%s</td><td>%s</td></tr>',
                 $denomination['title'],
                 $view->hyperlink(
-                    $denomination['schedule_count'],
+                    number_format($denomination['schedule_count']),
                     $view->url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => $denomination['query']], true)
                 ));
         }
@@ -91,7 +91,7 @@ class MareStats extends AbstractBlockLayout
                 '<tr><td>%s</td><td>%s</td></tr>',
                 $county['title'],
                 $view->hyperlink(
-                    $county['schedule_count'],
+                    number_format($county['schedule_count']),
                     $view->url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => $county['query']], true)
                 ));
         }
