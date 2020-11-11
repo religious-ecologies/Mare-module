@@ -10,7 +10,7 @@ use Omeka\Api\Representation\SitePageBlockRepresentation;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
 use Zend\View\Renderer\PhpRenderer;
 
-class MareStats extends AbstractBlockLayout
+abstract class AbstractMareStats extends AbstractBlockLayout
 {
     const SCHEDULE_TOTAL_COUNT = 232154;
 
@@ -37,68 +37,10 @@ class MareStats extends AbstractBlockLayout
         $this->denominationId = $mare->getProperty('http://religiousecologies.org/vocab#', 'denominationId');
     }
 
-    public function getLabel()
-    {
-        return 'MARE stats'; // @translate
-    }
-
     public function form(PhpRenderer $view, SiteRepresentation $site,
         SitePageRepresentation $page = null, SitePageBlockRepresentation $block = null
     ) {
         return 'This block will contain statistics about the current state of the MARE database.';
-    }
-
-    public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
-    {
-        $api = $this->mare->getApiManager();
-        $html = [];
-
-        // Totals
-        $scheduleCount = $api->read('resource_classes', $this->schedule->getId())->getContent()->itemCount();
-        $denominationCount = $api->read('resource_classes', $this->denomination->getId())->getContent()->itemCount();
-        $countyCount = $api->read('resource_classes', $this->county->getId())->getContent()->itemCount();
-        $html[] = '<div class="mare-totals">';
-        $html[] = '<h3>Totals</h3>';
-        $html[] = sprintf('<p><b>%s</b> schedules digitized (<b>%s</b>%% of total)</p>', number_format($scheduleCount), number_format(100 * ($scheduleCount / self::SCHEDULE_TOTAL_COUNT), 1));
-        $html[] = sprintf('<p><b>%s</b> denominations</p>', number_format($denominationCount));
-        $html[] = sprintf('<p><b>%s</b> counties</p>', number_format($countyCount));
-        $html[] = '</div>';
-
-        // Schedules per denomination
-        $html[] = '<div class="mare-denomination-schedules">';
-        $html[] = '<h3>Schedules per denomination (top 25)</h3>';
-        $html[] = '<table><thead><tr><th scope="col">Denomination</th><th scope="col">Schedule count</th></tr></thead><tbody>';
-        $denominations = $this->getSchedulesPer($this->denomination->getId(), $this->denominationId->getId());
-        foreach ($denominations as $denomination) {
-            $html[] = sprintf(
-                '<tr><td>%s</td><td>%s</td></tr>',
-                $denomination['title'],
-                $view->hyperlink(
-                    number_format($denomination['schedule_count']),
-                    $view->url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => $denomination['query']], true)
-                ));
-        }
-        $html[] = '</tbody></table>';
-        $html[] = '</div>';
-
-        // Schedules per county
-        $html[] = '<div class="mare-county-schedules">';
-        $html[] = '<h3>Schedules per county (top 25)</h3>';
-        $html[] = '<table><thead><tr><th scope="col">County</th><th scope="col">Schedule count</th></tr></thead><tbody>';
-        $counties = $this->getSchedulesPer($this->county->getId(), $this->ahcbCountyId->getId());
-        foreach ($counties as $county) {
-            $html[] = sprintf(
-                '<tr><td>%s</td><td>%s</td></tr>',
-                $county['title'],
-                $view->hyperlink(
-                    number_format($county['schedule_count']),
-                    $view->url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => $county['query']], true)
-                ));
-        }
-        $html[] = '</tbody></table>';
-        $html[] = '</div>';
-
-        return implode("\n", $html);
     }
 
     public function getSchedulesPer($classId, $propertyId)

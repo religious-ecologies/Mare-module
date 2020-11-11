@@ -42,7 +42,9 @@ class Module extends AbstractModule
             ],
             'block_layouts' => [
                 'factories' => [
-                    'mareStats' => Service\BlockLayout\MareStatsFactory::class,
+                    'mareStatsTotals' => Service\BlockLayout\MareStatsTotalsFactory::class,
+                    'mareStatsSchedulesPerCounty' => Service\BlockLayout\MareStatsSchedulesPerCountyFactory::class,
+                    'mareStatsSchedulesPerDenomination' => Service\BlockLayout\MareStatsSchedulesPerDenominationFactory::class,
                 ],
             ],
             'navigation_links' => [
