@@ -40,7 +40,7 @@ foreach ($countyIds as $countyId) {
 }
 ?>
 <p>Click on a state and then a county to see the schedules available in a particular location. If many schedules are available, you can then use the "browse all" link to see every schedule in that location.</p>
-<label>Filter by denomination <?php echo $this->formSelect($denominationSelect); ?></label>
+<label id="denomination-select-label">Filter by denomination <?php echo $this->formSelect($denominationSelect); ?></label>
 <div id="map"
     data-states-json="<?php echo $this->escapeHtml($this->assetUrl('js/states_1926.json', 'Mare')); ?>"
     data-counties-jsons="<?php echo $this->escapeHtml(json_encode($countiesJsons)); ?>"
