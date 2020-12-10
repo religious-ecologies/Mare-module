@@ -125,7 +125,7 @@ async function countyOnClick(countyFeature, countyLayer) {
     let popupLoading = document.createElement('span');
     popupDiv.appendChild(popupLoading);
     popupLoading.innerHTML = 'Loading...';
-    countyLayer.bindPopup(popupDiv);
+    countyLayer.bindPopup(popupDiv, { maxWidth : 500 });
     countyLayer.openPopup();
     let searchParams = {
         'resource_class_id[]': '111',
@@ -133,6 +133,7 @@ async function countyOnClick(countyFeature, countyLayer) {
         'property[0][property]': '196',
         'property[0][type]': 'eq',
         'property[0][text]': countyFeature.id,
+        'per_page': 10,
     };
     if (denominationSelect.value) {
         searchParams = {
