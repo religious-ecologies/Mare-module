@@ -41,6 +41,7 @@ foreach ($countyIds as $countyId) {
 ?>
 <?php echo $this->pageTitle('Map of Schedules', 2); ?>
 <p>Click on a state and then a county to see the schedules available in a particular location. If many schedules are available, you can then use the "browse all" link to see every schedule in that location.</p>
+<p>We recommend that our visually impaired and blind users explore the schedules through our text-based (<a href="https://omeka.religiousecologies.org/s/census-1926/item?resource_template_id%5B0%5D=5">query builder</a> or <a href="https://omeka.religiousecologies.org/s/census-1926/page/denominations">denomination</a> and <a href="https://omeka.religiousecologies.org/s/census-1926/page/locations">location</a> filtered views.</p>
 <label id="denomination-select-label">Filter by denomination <?php echo $this->formSelect($denominationSelect); ?></label>
 <div id="map"
     data-states-json="<?php echo $this->escapeHtml($this->assetUrl('js/states_1926.json', 'Mare')); ?>"
