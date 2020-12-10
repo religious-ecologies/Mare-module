@@ -39,6 +39,7 @@ foreach ($countyIds as $countyId) {
     $countiesJsons[$countyId] = $this->assetUrl(sprintf('js/counties_1926/%s.json', $countyId), 'Mare');
 }
 ?>
+<?php echo $this->pageTitle('Map of Schedules', 2); ?>
 <p>Click on a state and then a county to see the schedules available in a particular location. If many schedules are available, you can then use the "browse all" link to see every schedule in that location.</p>
 <label id="denomination-select-label">Filter by denomination <?php echo $this->formSelect($denominationSelect); ?></label>
 <div id="map"
