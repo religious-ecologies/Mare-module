@@ -46,6 +46,7 @@ foreach ($countyIds as $countyId) {
 <div id="map"
     data-states-json="<?php echo $this->escapeHtml($this->assetUrl('js/states_1926.json', 'Mare')); ?>"
     data-counties-jsons="<?php echo $this->escapeHtml(json_encode($countiesJsons)); ?>"
+    aria-label="Interface for geographic map of schedules"
 ></div>
 
 <script>
