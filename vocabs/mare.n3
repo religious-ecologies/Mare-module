@@ -129,6 +129,42 @@
     rdfs:subPropertyOf dcterms:publisher ;
     rdfs:range :OriginatingInstitution .
 
+:summary a rdf:Property ;
+    rdfs:label "summary"@en ;
+    rdfs:comment "A summary of this resource."@en ;
+    rdfs:subPropertyOf dcterms:abstract .
+
+:collectionUrl a rdf:Property ;
+    rdfs:label "collection URL"@en ;
+    rdfs:comment "The URL where collected resources are available."@en .
+
+:collectingUrl a rdf:Property ;
+    rdfs:label "collecting URL"@en ;
+    rdfs:comment "The URL where resources are collected."@en .
+
+:populatedPlaceName a rdf:Property ;
+    rdfs:label "populated place name"@en ;
+    rdfs:comment "A populated place name."@en .
+
+:countryName a rdf:Property ;
+    rdfs:label "country name"@en ;
+    rdfs:comment "A country name."@en .
+
+:geographicalFocus a rdf:Property ;
+    rdfs:label "geographical focus"@en ;
+    rdfs:comment "The geographical focus of this resource."@en ;
+    rdfs:subPropertyOf dcterms:spatial .
+
+:materialFocus a rdf:Property ;
+    rdfs:label "material focus"@en ;
+    rdfs:comment "The material focus of this resource."@en ;
+    rdfs:subPropertyOf dcterms:medium .
+
+:categoricalFocus a rdf:Property ;
+    rdfs:label "categorical focus"@en ;
+    rdfs:comment "The categorical focus of this resource."@en ;
+    rdfs:subPropertyOf dcterms:subject .
+
 #
 # Classes
 #
