@@ -165,6 +165,10 @@
     rdfs:comment "The categorical focus of this resource."@en ;
     rdfs:subPropertyOf dcterms:subject .
 
+:affiliation a rdf:Property ;
+    rdfs:label "affiliation"@en ;
+    rdfs:comment "An affiliation."@en .
+
 #
 # Classes
 #
