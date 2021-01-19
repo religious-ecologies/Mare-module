@@ -201,3 +201,7 @@
 :OriginatingInstitution a rdfs:Class ;
     rdfs:label "Originating Institution"@en ;
     rdfs:comment "An originating institution."@en .
+
+:CollectingProject a rdfs:Class ;
+    rdfs:label "Collecting Project"@en ;
+    rdfs:comment "A collecting project."@en .
