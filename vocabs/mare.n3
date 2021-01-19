@@ -205,3 +205,7 @@
 :CollectingProject a rdfs:Class ;
     rdfs:label "Collecting Project"@en ;
     rdfs:comment "A collecting project."@en .
+
+:CollectingInstitution a rdfs:Class ;
+    rdfs:label "Collecting Institution"@en ;
+    rdfs:comment "A collecting institution."@en .
