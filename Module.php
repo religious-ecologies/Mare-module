@@ -5,12 +5,12 @@ use Doctrine\DBAL\Connection;
 use Mare\Form\ConfigForm;
 use Omeka\Api\Representation\ItemRepresentation;
 use Omeka\Module\AbstractModule;
-use Zend\EventManager\Event;
-use Zend\EventManager\SharedEventManagerInterface;
-use Zend\Mvc\Controller\AbstractController;
-use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\View\Renderer\PhpRenderer;
+use Laminas\EventManager\Event;
+use Laminas\EventManager\SharedEventManagerInterface;
+use Laminas\Mvc\Controller\AbstractController;
+use Laminas\Mvc\MvcEvent;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\View\Renderer\PhpRenderer;
 
 class Module extends AbstractModule
 {
@@ -57,7 +57,7 @@ class Module extends AbstractModule
                     'site' => [
                         'child_routes' => [
                             'mare' => [
-                                'type' => \Zend\Router\Http\Segment::class,
+                                'type' => \Laminas\Router\Http\Segment::class,
                                 'options' => [
                                     'route' => '/mare/:controller/:action',
                                     'constraints' => [

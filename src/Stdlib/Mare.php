@@ -5,7 +5,7 @@ use Doctrine\ORM\EntityManager;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Entity\Property;
 use Omeka\Entity\ResourceClass;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 
 /**
  * A general-purpose service to facilitate MARE fuctionality.

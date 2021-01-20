@@ -1,8 +1,8 @@
 <?php
 namespace Mare\Controller\Site;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
 
 class MapController extends AbstractActionController
 {
@@ -30,7 +30,7 @@ class MapController extends AbstractActionController
                 $valueOptions[$denominationId->value()] = $denomination->title();
             }
         }
-        $denominationSelect = (new \Zend\Form\Element\Select('denomination'))
+        $denominationSelect = (new \Laminas\Form\Element\Select('denomination'))
             ->setValueOptions($valueOptions)
             ->setEmptyOption('[All denominations]')
             ->setAttribute('id', 'denomination-select');

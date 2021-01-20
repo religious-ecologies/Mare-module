@@ -3,7 +3,7 @@ namespace Mare\Service\Controller;
 
 use Interop\Container\ContainerInterface;
 use Mare\Controller\Site\PartialController;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class PartialControllerFactory implements FactoryInterface
 {

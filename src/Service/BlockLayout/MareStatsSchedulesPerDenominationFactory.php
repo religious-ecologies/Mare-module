@@ -3,7 +3,7 @@ namespace Mare\Service\BlockLayout;
 
 use Interop\Container\ContainerInterface;
 use Mare\BlockLayout\MareStatsSchedulesPerDenomination;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class MareStatsSchedulesPerDenominationFactory implements FactoryInterface
 {

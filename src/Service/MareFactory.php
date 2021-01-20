@@ -3,7 +3,7 @@ namespace Mare\Service;
 
 use Interop\Container\ContainerInterface;
 use Mare\Stdlib\Mare;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class MareFactory implements FactoryInterface
 {

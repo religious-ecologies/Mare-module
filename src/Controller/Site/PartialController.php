@@ -5,8 +5,8 @@ use Mare\Stdlib\Mare;
 use Omeka\Entity\Property;
 use Omeka\Entity\ResourceClass;
 use Omeka\Api\Representation\ItemRepresentation;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
 
 class PartialController extends AbstractActionController
 {
